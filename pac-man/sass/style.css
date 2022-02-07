@@ -24,6 +24,9 @@
 .game-field .type-3 {
   background-color: green;
 }
+.game-field .type-4 {
+  background-color: white;
+}
 .game-field .pac-man {
   background-color: orange;
 }

@@ -7,9 +7,10 @@ import gameFieldLayout from "./gameFieldLayout.js";
 
 // cell classes
 const WALL = "type-1";
-const PATH = "type-0";
+const PELLET = "type-0";
 const GHOST_LAIR = "type-2";
 const POWER_PELLET = "type-3";
+const EMPTY = "type-4";
 
 
 // FUNCTIONS
@@ -32,6 +33,14 @@ let pacManLocation = 490; // game field index
 gameFieldGrid.children[pacManLocation].classList.add("pac-man")
 
 
+const checkForFood = () => {
+    const location = gameFieldGrid.children[pacManLocation];
+    if (location.classList.contains(PELLET)) {
+        location.classList.remove(PELLET);
+        location.classList.add(EMPTY);
+    }
+};
+
 
 const attemptMove = (requestedLocation) => {
     const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
@@ -47,8 +56,8 @@ const attemptMove = (requestedLocation) => {
 
 const gameFieldWidth = 28;
 const movePacMan = (event) => {
-    console.log(event.key);
     const pressedKey = event.key;
+
     switch (pressedKey) {
         case "w": // up
             attemptMove(pacManLocation - gameFieldWidth);
@@ -66,6 +75,8 @@ const movePacMan = (event) => {
         default:
             break;
     }
+
+    checkForFood();
 }
 
 
