@@ -13,14 +13,18 @@
     grid-template-rows: repeat(28, 1fr);
     grid-template-columns: repeat(28, 1fr);
 
-    .type-0 {background-color: black;}
-    .type-1 {background-color: blue;}
-    .type-2 {background-color: gray;}
-    .type-3 {background-color: green;}
-    .type-4 {background-color: lightgray;}
+    .type-0 {background-color: black;} // pellet
+    .type-1 {background-color: rgb(28, 78, 214);} // wall
+    .type-2 {background-color: gray;} // ghost lair
+    .type-3 {background-color: green;} // power pellet
+    .type-4 {background-color: lightgray;} // empty
+    
     .pac-man {background-color: yellow;}
+    
     .Blinky {background-color: red;}
     .Pinky {background-color: pink;}
     .Inky {background-color: cyan;}
     .Clyde {background-color: orange;}
+    
+    .pathfinding {background-color: purple;}
 }

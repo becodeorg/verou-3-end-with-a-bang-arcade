@@ -16,7 +16,7 @@
   background-color: black;
 }
 .game-field .type-1 {
-  background-color: blue;
+  background-color: #1c4ed6;
 }
 .game-field .type-2 {
   background-color: gray;
@@ -41,6 +41,9 @@
 }
 .game-field .Clyde {
   background-color: orange;
+}
+.game-field .pathfinding {
+  background-color: purple;
 }
 
 /*# sourceMappingURL=style.css.map */

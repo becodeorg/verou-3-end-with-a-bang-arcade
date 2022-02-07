@@ -12,6 +12,23 @@ const GHOST_LAIR = "type-2";
 const POWER_PELLET = "type-3";
 const EMPTY = "type-4";
 
+let pacManLocation = 490; // game field index
+
+class Ghost {
+    constructor(name, speed, location) {
+        this.name = name;
+        this.speed = speed;
+        this.location = location
+    }
+}
+
+const ghosts = [
+    new Ghost("Blinky", 3, 347),
+    new Ghost("Pinky", 2, 403),
+    new Ghost("Inky", 2, 408),
+    new Ghost("Clyde", 2, 352),
+]
+
 
 // FUNCTIONS
 
@@ -27,10 +44,13 @@ const createGameField = () => {
 };
 createGameField();
 
-
-// place pac-man
-let pacManLocation = 490; // game field index
+// place pac-man on game field
 gameFieldGrid.children[pacManLocation].classList.add("pac-man")
+
+// place ghosts on game field
+for (const ghost of ghosts) {
+    gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+}
 
 
 const checkForFood = () => {
@@ -40,7 +60,6 @@ const checkForFood = () => {
         location.classList.add(EMPTY);
     }
 };
-
 
 const attemptMove = (requestedLocation) => {
     const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
@@ -89,27 +108,106 @@ const movePacMan = (event) => {
 }
 
 
-// create ghosts
-class Ghost {
-    constructor(name, speed, location) {
-        this.name = name;
-        this.speed = speed;
-        this.location = location
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+const moveGhost = (ghost, direction) => {
+    gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+    ghost.location = direction;
+    gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+
+};
+
+const checkIfCellIsWall = (location) => {
+    if (gameFieldGrid.children[location].classList.contains(WALL)) {
+        return (true);
+    } else {
+        return (false);
     }
 }
 
-const ghosts = [
-    new Ghost("Blinky", 3, 347),
-    new Ghost("Pinky", 2, 403),
-    new Ghost("Inky", 2, 408),
-    new Ghost("Clyde", 2, 352),
-]
+const getNeighbors = (location) => {
+    const neighbors = [];
+    const rightNeighbor = location + 1;
+    const leftNeighbor = location - 1;
+    const upNeighbor = location + gameFieldWidth;
+    const downNeighbor = location - gameFieldWidth;
 
-for (const ghost of ghosts) {
-    gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+    if (checkIfCellIsWall(rightNeighbor) === false) {
+        neighbors.push(rightNeighbor);
+    }
+    if (checkIfCellIsWall(leftNeighbor) === false) {
+        neighbors.push(leftNeighbor);
+    }
+    if (checkIfCellIsWall(upNeighbor) === false) {
+        neighbors.push(upNeighbor);
+    }
+    if (checkIfCellIsWall(downNeighbor) === false) {
+        neighbors.push(downNeighbor);
+    }
+
+    return (neighbors);
+};
+
+// const createRoute = (start, end, passed) => {
+//     const path = [];
+
+//     let current = end;
+//     while (current !== start) {
+//         current = passed[current];
+//         path.push(current);
+//     }
+
+//     return (path);
+// };
+
+const pathFinding = async (startLocation) => {
+    const floodFrontier = [];
+    const trailTrace = {};
+    let ghostsMoved = 0;
+
+    floodFrontier.push(startLocation);
+
+    while (floodFrontier.length > 0) {
+        const currentCell = floodFrontier.shift();
+        const neighborsOfCurrentCell = getNeighbors(currentCell);
+
+        for (const neighborCell of neighborsOfCurrentCell) {
+            if (!(neighborCell in trailTrace)) {
+                floodFrontier.push(neighborCell);
+                trailTrace[neighborCell] = currentCell;
+
+                // gameFieldGrid.children[neighborCell].classList.add("pathfinding");
+
+                // if (neighborCell === pacManLocation) {
+                if (neighborCell === ghosts[0].location) {
+                    moveGhost(ghosts[0], currentCell);
+                    ghostsMoved++;
+                } else if (neighborCell === ghosts[1].location) {
+                    moveGhost(ghosts[1], currentCell);
+                    ghostsMoved++;
+                } else if (neighborCell === ghosts[2].location) {
+                    moveGhost(ghosts[2], currentCell);
+                    ghostsMoved++;
+                } else if (neighborCell === ghosts[3].location) {
+                    moveGhost(ghosts[3], currentCell);
+                    ghostsMoved++;
+                }
+
+                if (ghostsMoved === 4) {
+                    return;
+                }
+
+                // await sleep(10);
+            }
+        }
+    }
 }
 
-// move ghosts
+// pathFinding(ghosts[0].location);
+setInterval(() => {
+    // pathFinding(pacManLocation);
+}, 100);
+
 
 // EVENT LISTENERS
 
