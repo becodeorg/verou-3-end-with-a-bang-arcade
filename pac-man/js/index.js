@@ -63,13 +63,21 @@ const movePacMan = (event) => {
             attemptMove(pacManLocation - gameFieldWidth);
             break;
         case "a": // left
-            attemptMove(pacManLocation - 1);
+            if (pacManLocation === 364) {
+                attemptMove(391)
+            } else {
+                attemptMove(pacManLocation - 1);
+            }
             break;
         case "s": // down
             attemptMove(pacManLocation + gameFieldWidth);
             break;
         case "d": // right
-            attemptMove(pacManLocation + 1);
+            if (pacManLocation === 391) {
+                attemptMove(364);
+            } else {
+                attemptMove(pacManLocation + 1);
+            }
             break;
 
         default:
