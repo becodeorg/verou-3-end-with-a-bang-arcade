@@ -9,9 +9,9 @@ body{
     width: 100vw;
     height: 100vh;
 }
-#the-field{
-    background-color: violet;
-    
+#theField{
+    background-color: rgba(248, 169, 248, 0.788);
+    ;
     height: 60VH;
     width: 60vw;
 
@@ -21,7 +21,7 @@ body{
     width: 15px;
     height: 15px;
     border-radius: 50px;
-    background-color: yellow;
+    background-color: rgb(245, 245, 149);
     position: fixed;
     top: calc(50% - 7.5px);
     left: calc(50% - 7.5px);
@@ -30,16 +30,17 @@ body{
 #paddleOne{
     height: 50px;
     width: 10px;
-    background-color: yellow;
+    background-color: rgb(245, 245, 149);
     position: fixed;
     top: calc(50% - 25px);
+    
 
 }
 
 #paddle-two{
     height: 50px;
     width: 10px;
-    background-color: yellow;
+    background-color: rgb(245, 245, 149);
     position: fixed;
     top: calc(50% - 25px);
     left: calc(100% - 20vw - 10px);
