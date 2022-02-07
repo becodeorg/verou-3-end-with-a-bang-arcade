@@ -84,22 +84,30 @@ const movePacMan = (event) => {
             break;
     }
 
+    console.log(pacManLocation);
     checkForFood();
 }
 
 
 // create ghosts
-// class Ghost {
-//     constructor(name, speed, location) {
-//         this.name = name;
-//         this.speed = speed;
-//         this.location = location
-//     }
-// }
+class Ghost {
+    constructor(name, speed, location) {
+        this.name = name;
+        this.speed = speed;
+        this.location = location
+    }
+}
 
-// const ghosts = {
+const ghosts = [
+    new Ghost("Blinky", 3, 347),
+    new Ghost("Pinky", 2, 403),
+    new Ghost("Inky", 2, 408),
+    new Ghost("Clyde", 2, 352),
+]
 
-// }
+for (const ghost of ghosts) {
+    gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+}
 
 // move ghosts
 
