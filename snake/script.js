@@ -21,8 +21,19 @@ function drawCanvas() {
     snakeBoard_ctx.strokeRect(0, 0, snakeBoard.width, snakeBoard.height);
 }
 
+const drawSnakePart = (snakePart) => {
+    //draws rectangle for each pair of coordinates
+    snakeBoard_ctx.fillStyle = "lightgreen";
+    snakeBoard_ctx.fillRect(snakePart.x, snakePart.y, 10, 10);
+};
+
+const drawSnake = () => {
+    snake.forEach(drawSnakePart); //for each coordinate, draw it on the screen
+};
+
 const runGame = () => {
     drawCanvas();
+    drawSnake();
 };
 
 runGame();
