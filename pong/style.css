@@ -1,0 +1,57 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+#the-field{
+    background-color: violet;
+    
+    height: 60VH;
+    width: 60vw;
+
+}
+
+#ball{
+    width: 15px;
+    height: 15px;
+    border-radius: 50px;
+    background-color: yellow;
+    position: fixed;
+    top: calc(50% - 7.5px);
+    left: calc(50% - 7.5px);
+}
+
+#paddleOne{
+    height: 50px;
+    width: 10px;
+    background-color: yellow;
+    position: fixed;
+    top: calc(50% - 25px);
+
+}
+
+#paddle-two{
+    height: 50px;
+    width: 10px;
+    background-color: yellow;
+    position: fixed;
+    top: calc(50% - 25px);
+    left: calc(100% - 20vw - 10px);
+    
+    
+}
+
+#the-net{
+    background-color: yellow;
+}
+
+#the-score{
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+}
