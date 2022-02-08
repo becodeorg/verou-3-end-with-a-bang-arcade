@@ -203,6 +203,75 @@ const pathFinding = async (startLocation) => {
     }
 }
 
+
+const attemptToMoveInDirection = (ghost, requestedLocation) => {
+    const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
+
+    if (requestedLocationType != WALL) {
+        gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+        gameFieldGrid.children[requestedLocation].classList.add(ghost.name);
+        ghost.location = requestedLocation;
+        return (true);
+    } else {
+        return (false);
+    }
+}
+
+const getCoords = (location) => {
+    const coords = [];
+
+    coords.x = location % gameFieldWidth;
+    coords.y = Math.floor(location / gameFieldWidth);
+
+    return (coords);
+};
+
+const attemptXAxisMove = (ghost, xDelta) => {
+    if (xDelta > 0) {
+        return (attemptToMoveInDirection(ghost, ghost.location - 1)); // left
+    } else {
+        return (attemptToMoveInDirection(ghost, ghost.location + 1)); // right
+    }
+}
+const attemptYAxisMove = (ghost, yDelta) => {
+    if (yDelta > 0) {
+        return (attemptToMoveInDirection(ghost, ghost.location - 28)); // up
+    } else {
+        return (attemptToMoveInDirection(ghost, ghost.location + 28)); // down
+    }
+}
+
+const moveGhostInDirectionOfPacMan = (ghost) => {
+    const ghostCoords = getCoords(ghost.location);
+    const pacManCoords = getCoords(pacManLocation);
+    const xDelta = ghostCoords.x - pacManCoords.x;
+    const yDelta = ghostCoords.y - pacManCoords.y;
+
+    if (Math.abs(xDelta) > Math.abs(yDelta)) {
+        if (attemptXAxisMove(ghost, xDelta) === false) {
+            if (yDelta === 0) { // facing a wall
+                return (false);
+            } else {
+                return (attemptYAxisMove(ghost, yDelta));
+            }
+        }
+    } else {
+        if (attemptYAxisMove(ghost, yDelta) === false) {
+            if (xDelta === 0) { // facing a wall
+                return (false);
+            } else {
+                return (attemptXAxisMove(ghost, xDelta));
+            }
+        }
+    }
+
+    return (true);
+};
+
+setInterval(() => {
+    moveGhostInDirectionOfPacMan(ghosts[1]);
+}, 100);
+
 // pathFinding(ghosts[0].location);
 setInterval(() => {
     // pathFinding(pacManLocation);
