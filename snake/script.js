@@ -8,6 +8,9 @@ let tileSize = snakeBoard.width / tileCount - 2; //if size of canvas or tileCoun
 let snakeHeadX = 10;
 let snakeHeadY = 10;
 
+let appleX = 5;
+let appleY = 5;
+
 let xVelocity = 0;
 let yVelocity = 0;
 
@@ -71,7 +74,6 @@ const snakeDirection = (event) => {
         xVelocity = 1;
     }
 };
-
 document.body.addEventListener("keydown", snakeDirection);
 
 const changeSnakeDirection = () => {
@@ -79,9 +81,24 @@ const changeSnakeDirection = () => {
     snakeHeadY = snakeHeadY + yVelocity;
 };
 
+const drawApple = () => {
+    ctx.fillStyle = "green";
+    ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+};
+
+const checkApplePosition = () => {
+    if (appleX === snakeHeadX && appleY === snakeHeadY) {
+        // if snakehead and apple collide
+        appleX = Math.floor(Math.random() * tileCount); //apple will move to random location inside our canvas
+        appleY = Math.floor(Math.random() * tileCount);
+    }
+};
+
 const gameLoop = () => {
     clearCanvas();
     changeSnakeDirection();
+    checkApplePosition();
+    drawApple();
     drawSnake();
     setTimeout(gameLoop, 1000 / speed);
 };
