@@ -157,6 +157,27 @@ const gameOver = () => {
     }
     return gameOver;
 };
+
+const changeSpeed = () => {
+    if (playerScore > 5) {
+        speed = 9;
+    }
+    if (playerScore > 10) {
+        speed = 11;
+    }
+    if (playerScore > 15) {
+        speed = 13;
+    }
+    if (playerScore > 20) {
+        speed = 15;
+    }
+    if (playerScore > 25) {
+        speed = 18;
+    }
+    if (playerScore > 30) {
+        speed = 21;
+    }
+};
 const gameLoop = () => {
     changeSnakeDirection();
     let result = gameOver();
@@ -170,6 +191,7 @@ const gameLoop = () => {
     drawApple();
     drawSnake();
 
+    changeSpeed();
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
