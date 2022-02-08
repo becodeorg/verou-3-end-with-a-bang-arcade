@@ -28,6 +28,7 @@ class Ghost {
     constructor(name, speed, location, movementMode) {
         this.name = name;
         this.speed = speed;
+        this.startLocation = location;
         this.location = location;
         this.movementMode = movementMode;
     }
@@ -278,12 +279,29 @@ const moveGhostAwayFromPacMan = (ghost) => {
 
 
 const gameOver = () => {
+    console.log("game over");
+
     for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
         clearInterval(value);
     }
     clearInterval(intervalIDs.pathFindingIntervalID);
 
     gameRunning = false;
+}
+
+const eatGhost = (ghost) => {
+    console.log("ate " + ghost.name);
+    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+    ghost.location = ghost.startLocation;
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+}
+
+const ghostContact = (ghost) => {
+    if (powerPelletActive) {
+        eatGhost(ghost);
+    } else {
+        gameOver();
+    }
 }
 
 let counter = 0;
@@ -319,8 +337,7 @@ const ghostMovementHandler = (ghost) => {
         }
 
         if (ghost.location === pacManLocation) {
-            console.log("game over");
-            gameOver();
+            ghostContact(ghost);
         }
     }, ghost.speed);
 }
@@ -351,7 +368,7 @@ const runGame = () => {
 
     // place ghosts on game field
     for (const ghost of ghosts) {
-        gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+        gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
     }
 
     // start pathfinding
@@ -407,8 +424,10 @@ const handleKeyEvent = (event) => {
         }
 
         if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
-            console.log("game over");
-            gameOver();
+            const ghost = ghosts.filter(ghost => {
+                return ghost.location === pacManLocation;
+            })
+            ghostContact(ghost[0]);
         }
 
         checkForFood();
