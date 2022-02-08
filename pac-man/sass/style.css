@@ -2,7 +2,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 1px solid gray;
 }
 
 .game-field {
@@ -14,21 +13,36 @@
 }
 .game-field .type-0 {
   background-color: black;
+  position: relative;
+}
+.game-field .type-0::before {
+  content: "";
+  position: absolute;
+  top: 35%;
+  left: 35%;
+  height: 30%;
+  width: 30%;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
 }
 .game-field .type-1 {
   background-color: #1c4ed6;
 }
 .game-field .type-2 {
-  background-color: gray;
+  background-color: #585858;
 }
 .game-field .type-3 {
   background-color: green;
 }
 .game-field .type-4 {
-  background-color: lightgray;
+  background-color: black;
 }
 .game-field .pac-man {
   background-color: yellow;
+}
+.game-field .ghost {
+  border: 1px solid black;
 }
 .game-field .Blinky {
   background-color: red;
