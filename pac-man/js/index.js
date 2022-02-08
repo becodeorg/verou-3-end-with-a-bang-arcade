@@ -118,7 +118,11 @@ const movePacMan = (event) => {
             break;
     }
 
-    // console.log(pacManLocation);
+    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
+        console.log("game over");
+        gameOver();
+    }
+
     checkForFood();
 }
 
@@ -128,9 +132,9 @@ const movePacMan = (event) => {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const moveGhost = (ghost, direction) => {
-    gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
     ghost.location = direction;
-    gameFieldGrid.children[ghost.location].classList.add(ghost.name);
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
 };
 
 const checkIfCellIsWall = (location) => {
@@ -211,9 +215,7 @@ const attemptToMoveInDirection = (ghost, requestedLocation) => {
     const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
 
     if (requestedLocationType != WALL) {
-        gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
-        gameFieldGrid.children[requestedLocation].classList.add(ghost.name);
-        ghost.location = requestedLocation;
+        moveGhost(ghost, requestedLocation);
         return (true);
     } else {
         return (false);
@@ -304,9 +306,7 @@ const moveGhostAwayFromPacMan = (ghost) => {
         movementDirection = directionPossibilities[0];
     }
 
-    gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
-    gameFieldGrid.children[movementDirection].classList.add(ghost.name);
-    ghost.location = movementDirection;
+    moveGhost(ghost, movementDirection);
 };
 
 
@@ -351,6 +351,7 @@ const ghostMovementHandler = (ghost) => {
                 moveGhostAwayFromPacMan(ghost);
             }
         }
+
         if (ghost.location === pacManLocation) {
             console.log("game over");
             gameOver();
