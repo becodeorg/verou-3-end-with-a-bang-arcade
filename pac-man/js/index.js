@@ -14,6 +14,7 @@ const EMPTY = "type-4";
 
 const PATHFINDING = "pathfinding";
 const DIRECT = "direct";
+const AWAY = "away"
 
 let pacManLocation = 490; // game field index
 
@@ -31,7 +32,7 @@ const ghosts = [
     new Ghost("Blinky", 150, 347, PATHFINDING),
     new Ghost("Pinky", 150, 403, DIRECT),
     new Ghost("Inky", 200, 408, DIRECT),
-    new Ghost("Clyde", 200, 352),
+    new Ghost("Clyde", 200, 352, AWAY),
 ]
 
 
@@ -112,7 +113,7 @@ const movePacMan = (event) => {
             break;
     }
 
-    console.log(pacManLocation);
+    // console.log(pacManLocation);
     checkForFood();
 }
 
@@ -265,11 +266,52 @@ const moveGhostInDirectionOfPacMan = (ghost) => {
     return (true);
 };
 
+const moveGhostAwayFromPacMan = (ghost) => {
+    const directionPossibilities = [];
+    const left = ghost.location - 1;
+    const right = ghost.location + 1;
+    const up = ghost.location - 28;
+    const down = ghost.location + 28;
+
+    if (!checkIfCellIsWall(up)) {
+        directionPossibilities.push(up);
+    }
+    if (!checkIfCellIsWall(down)) {
+        directionPossibilities.push(down);
+    }
+    if (!checkIfCellIsWall(left)) {
+        directionPossibilities.push(left);
+    }
+    if (!checkIfCellIsWall(right)) {
+        directionPossibilities.push(right);
+    }
+
+    if (directionPossibilities.includes(ghost.pathFinder)) {
+        const index = directionPossibilities.indexOf(ghost.pathFinder);
+        directionPossibilities.splice(index, 1);
+    }
+
+    let movementDirection;
+    if (directionPossibilities.length > 1) {
+        const randNum = Math.floor(Math.random() * directionPossibilities.length);
+        movementDirection = directionPossibilities[randNum];
+    } else {
+        movementDirection = directionPossibilities[0];
+    }
+
+    gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+    gameFieldGrid.children[movementDirection].classList.add(ghost.name);
+    ghost.location = movementDirection;
+};
+
 
 setInterval(() => {
     pathFinding(pacManLocation);
 }, 100);
 
+
+let counter = 0;
+let brave = false;
 
 const ghostMovementHandler = (ghost) => {
     setInterval(() => {
@@ -282,12 +324,27 @@ const ghostMovementHandler = (ghost) => {
                     ghost.movementMode = DIRECT;
                 }, 5000);
             }
+        } else {
+            if (counter === 10) {
+                counter = 1;
+                brave = !brave;
+            } else {
+                counter++;
+            }
+
+            const locationType = gameFieldGrid.children[ghost.location].classList[1];
+            if (brave || locationType === GHOST_LAIR) {
+                moveGhost(ghost, ghost.pathFinder);
+            } else {
+                moveGhostAwayFromPacMan(ghost);
+            }
         }
     }, ghost.speed);
 }
 ghostMovementHandler(ghosts[0]);
 ghostMovementHandler(ghosts[1]);
 ghostMovementHandler(ghosts[2]);
+ghostMovementHandler(ghosts[3]);
 
 
 // EVENT LISTENERS
