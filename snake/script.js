@@ -19,6 +19,7 @@ let tailLength = 2;
 let appleX = 5;
 let appleY = 5;
 const gulpSound = new Audio("biteAppleSound.mp3");
+const gameOverSound = new Audio("arcadeGameTone.mp3");
 
 let xVelocity = 0;
 let yVelocity = 0;
@@ -152,6 +153,7 @@ const gameOver = () => {
         ctx.fillStyle = "red";
         ctx.font = "50px monospace";
         ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
+        gameOverSound.play();
     }
     return gameOver;
 };
