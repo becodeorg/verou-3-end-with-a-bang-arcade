@@ -5,10 +5,6 @@ import gameFieldLayout from "./gameFieldLayout.js";
 
 // GLOBAL VARIABLES
 
-const gameFieldWidth = 28;
-
-let gameRunning = false;
-
 // cell classes
 const WALL = "type-1";
 const PELLET = "type-0";
@@ -19,6 +15,12 @@ const EMPTY = "type-4";
 const PATHFINDING = "pathfinding";
 const DIRECT = "direct";
 const AWAY = "away"
+
+const gameFieldWidth = 28;
+
+let gameRunning = false;
+
+let powerPelletActive = false;
 
 let pacManLocation = 490; // game field index
 
@@ -64,6 +66,15 @@ const checkForFood = () => {
     if (location.classList.contains(PELLET)) {
         location.classList.remove(PELLET);
         location.classList.add(EMPTY);
+    } else if (location.classList.contains(POWER_PELLET)) {
+        location.classList.remove(POWER_PELLET);
+        location.classList.add(EMPTY);
+        powerPelletActive = true;
+        console.log("power pellet active!");
+        setTimeout(() => {
+            powerPelletActive = false;
+            console.log("power pellet wore off");
+        }, 7000);
     }
 };
 
@@ -256,8 +267,10 @@ const moveGhostAwayFromPacMan = (ghost) => {
     if (directionPossibilities.length > 1) {
         const randNum = Math.floor(Math.random() * directionPossibilities.length);
         movementDirection = directionPossibilities[randNum];
-    } else {
+    } else if (directionPossibilities.length === 1) {
         movementDirection = directionPossibilities[0];
+    } else {
+        return;
     }
 
     moveGhost(ghost, movementDirection);
@@ -278,7 +291,9 @@ let brave = false;
 
 const ghostMovementHandler = (ghost) => {
     intervalIDs.ghostMovementHandlerIntervalID[ghost.name] = setInterval(() => {
-        if (ghost.movementMode === PATHFINDING) {
+        if (powerPelletActive) {
+            moveGhostAwayFromPacMan(ghost);
+        } else if (ghost.movementMode === PATHFINDING) {
             moveGhost(ghost, ghost.pathFinder);
         } else if (ghost.movementMode === DIRECT) {
             if (moveGhostInDirectionOfPacMan(ghost) === false) {
