@@ -1,39 +1,57 @@
-let snake = [
-    //starting coordinates for snake
-    { x: 200, y: 200 },
-    { x: 190, y: 200 },
-    { x: 180, y: 200 },
-    { x: 170, y: 200 },
-    { x: 160, y: 200 },
-];
-
 const snakeBoard = document.getElementById("snakeCanvas");
-const snakeBoard_ctx = snakeBoard.getContext("2d");
+const ctx = snakeBoard.getContext("2d");
 
-function drawCanvas() {
+let speed = 7;
+
+let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
+let tileSize = snakeBoard.width / tileCount - 2; //if size of canvas or tileCount changes, this will be new tileSize
+let snakeHeadX = 10;
+let snakeHeadY = 10;
+
+let xVelocity = 0;
+let yVelocity = 0;
+
+function clearCanvas() {
     //select the colour to fill the drawing
-    snakeBoard_ctx.fillStyle = "white";
+    ctx.fillStyle = "white";
     //select the colour for the border of the canvas
-    snakeBoard_ctx.strokestyle = "black";
+    ctx.strokestyle = "black";
     //draw filled rectangle to cover entire canvas
-    snakeBoard_ctx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
+    ctx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
     //draw border around canvas
-    snakeBoard_ctx.strokeRect(0, 0, snakeBoard.width, snakeBoard.height);
+    ctx.strokeRect(0, 0, snakeBoard.width, snakeBoard.height);
 }
 
-const drawSnakePart = (snakePart) => {
-    //draws rectangle for each pair of coordinates
-    snakeBoard_ctx.fillStyle = "lightgreen";
-    snakeBoard_ctx.fillRect(snakePart.x, snakePart.y, 10, 10);
-};
-
 const drawSnake = () => {
-    snake.forEach(drawSnakePart); //for each coordinate, draw it on the screen
+    ctx.fillStyle = "lightgreen";
+    ctx.fillRect(
+        snakeHeadX * tileCount,
+        snakeHeadY * tileCount,
+        tileSize,
+        tileSize
+    );
 };
 
-const runGame = () => {
-    drawCanvas();
+const snakeDirection = (event) => {
+    console.log(event);
+    //up
+    if (event.key === "w" || event.key === "ArrowUp") {
+        yVelocity = -1; //moving on y-axis: you'll move up
+        xVelocity = 0; //moving on x-axis will stop cause you'll move on y-axis
+    }
+};
+const body = document.querySelector("body");
+body.addEventListener("keydown", snakeDirection);
+
+const changeSnakeDirection = () => {
+    snakeHeadX = snakeHeadX + xVelocity;
+    snakeHeadY = snakeHeadY + yVelocity;
+};
+
+const gameLoop = () => {
+    clearCanvas();
+    changeSnakeDirection();
     drawSnake();
+    setTimeout(gameLoop, 1000 / speed);
 };
-
-runGame();
+gameLoop();
