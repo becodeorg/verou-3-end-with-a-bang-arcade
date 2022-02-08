@@ -28,8 +28,13 @@ body{
 }
 
 .address{
-    margin: 40px auto;
+    margin: 20px auto;
     font-size: 30px;
+}
+.players{
+    display: flex;
+    justify-content:space-between;
+    margin: 20px 50px;
 }
 
 .board{
