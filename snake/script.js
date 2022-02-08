@@ -18,6 +18,7 @@ let tailLength = 2;
 
 let appleX = 5;
 let appleY = 5;
+const gulpSound = new Audio("biteAppleSound.mp3");
 
 let xVelocity = 0;
 let yVelocity = 0;
@@ -120,6 +121,7 @@ const checkApplePosition = () => {
         const score = document.getElementById("score");
         playerScore++;
         score.innerHTML = playerScore;
+        gulpSound.play();
     }
 };
 
