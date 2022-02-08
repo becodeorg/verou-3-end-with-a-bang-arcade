@@ -23,7 +23,7 @@ function clearCanvas() {
 }
 
 const drawSnake = () => {
-    ctx.fillStyle = "lightgreen";
+    ctx.fillStyle = "red";
     ctx.fillRect(
         snakeHeadX * tileCount,
         snakeHeadY * tileCount,
@@ -39,9 +39,24 @@ const snakeDirection = (event) => {
         yVelocity = -1; //moving on y-axis: you'll move up
         xVelocity = 0; //moving on x-axis will stop cause you'll move on y-axis
     }
+    //down
+    if (event.key === "s" || event.key === "ArrowDown") {
+        yVelocity = 1;
+        xVelocity = 0;
+    }
+    //left
+    if (event.key === "a" || event.key === "ArrowLeft") {
+        yVelocity = 0;
+        xVelocity = -1;
+    }
+    //right
+    if (event.key === "d" || event.key === "ArrowRight") {
+        yVelocity = 0;
+        xVelocity = 1;
+    }
 };
-const body = document.querySelector("body");
-body.addEventListener("keydown", snakeDirection);
+
+document.body.addEventListener("keydown", snakeDirection);
 
 const changeSnakeDirection = () => {
     snakeHeadX = snakeHeadX + xVelocity;
