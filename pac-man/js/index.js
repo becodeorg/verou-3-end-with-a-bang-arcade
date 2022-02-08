@@ -12,25 +12,32 @@ const GHOST_LAIR = "type-2";
 const POWER_PELLET = "type-3";
 const EMPTY = "type-4";
 
+const PATHFINDING = "pathfinding";
+const DIRECT = "direct";
+
 let pacManLocation = 490; // game field index
 
 class Ghost {
-    constructor(name, speed, location) {
+    constructor(name, speed, location, movementMode) {
         this.name = name;
         this.speed = speed;
-        this.location = location
+        this.location = location;
+        this.movementMode = movementMode;
     }
+    pathFinder;
 }
 
 const ghosts = [
-    new Ghost("Blinky", 3, 347),
-    new Ghost("Pinky", 2, 403),
-    new Ghost("Inky", 2, 408),
-    new Ghost("Clyde", 2, 352),
+    new Ghost("Blinky", 150, 347, PATHFINDING),
+    new Ghost("Pinky", 150, 403, DIRECT),
+    new Ghost("Inky", 200, 408, DIRECT),
+    new Ghost("Clyde", 200, 352),
 ]
 
 
 // FUNCTIONS
+
+// SET UP
 
 // fill grid with cells
 const gameFieldGrid = document.querySelector(".game-field");
@@ -52,6 +59,8 @@ for (const ghost of ghosts) {
     gameFieldGrid.children[ghost.location].classList.add(ghost.name);
 }
 
+
+// PAC-MAN
 
 const checkForFood = () => {
     const location = gameFieldGrid.children[pacManLocation];
@@ -108,13 +117,14 @@ const movePacMan = (event) => {
 }
 
 
+// GHOSTS
+
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const moveGhost = (ghost, direction) => {
     gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
     ghost.location = direction;
     gameFieldGrid.children[ghost.location].classList.add(ghost.name);
-
 };
 
 const checkIfCellIsWall = (location) => {
@@ -148,18 +158,6 @@ const getNeighbors = (location) => {
     return (neighbors);
 };
 
-// const createRoute = (start, end, passed) => {
-//     const path = [];
-
-//     let current = end;
-//     while (current !== start) {
-//         current = passed[current];
-//         path.push(current);
-//     }
-
-//     return (path);
-// };
-
 const pathFinding = async (startLocation) => {
     const floodFrontier = [];
     const trailTrace = {};
@@ -178,18 +176,17 @@ const pathFinding = async (startLocation) => {
 
                 // gameFieldGrid.children[neighborCell].classList.add("pathfinding");
 
-                // if (neighborCell === pacManLocation) {
                 if (neighborCell === ghosts[0].location) {
-                    moveGhost(ghosts[0], currentCell);
+                    ghosts[0].pathFinder = currentCell;
                     ghostsMoved++;
                 } else if (neighborCell === ghosts[1].location) {
-                    moveGhost(ghosts[1], currentCell);
+                    ghosts[1].pathFinder = currentCell;
                     ghostsMoved++;
                 } else if (neighborCell === ghosts[2].location) {
-                    moveGhost(ghosts[2], currentCell);
+                    ghosts[2].pathFinder = currentCell;
                     ghostsMoved++;
                 } else if (neighborCell === ghosts[3].location) {
-                    moveGhost(ghosts[3], currentCell);
+                    ghosts[3].pathFinder = currentCell;
                     ghostsMoved++;
                 }
 
@@ -268,14 +265,29 @@ const moveGhostInDirectionOfPacMan = (ghost) => {
     return (true);
 };
 
+
 setInterval(() => {
-    moveGhostInDirectionOfPacMan(ghosts[1]);
+    pathFinding(pacManLocation);
 }, 100);
 
-// pathFinding(ghosts[0].location);
-setInterval(() => {
-    // pathFinding(pacManLocation);
-}, 100);
+
+const ghostMovementHandler = (ghost) => {
+    setInterval(() => {
+        if (ghost.movementMode === PATHFINDING) {
+            moveGhost(ghost, ghost.pathFinder);
+        } else if (ghost.movementMode === DIRECT) {
+            if (moveGhostInDirectionOfPacMan(ghost) === false) {
+                ghost.movementMode = PATHFINDING;
+                setTimeout(() => {
+                    ghost.movementMode = DIRECT;
+                }, 5000);
+            }
+        }
+    }, ghost.speed);
+}
+ghostMovementHandler(ghosts[0]);
+ghostMovementHandler(ghosts[1]);
+ghostMovementHandler(ghosts[2]);
 
 
 // EVENT LISTENERS
