@@ -35,6 +35,11 @@ const ghosts = [
     new Ghost("Clyde", 200, 352, AWAY),
 ]
 
+const intervalIDs = {
+    ghostMovementHandlerIntervalID: {},
+    pathFindingIntervalID: undefined,
+};
+
 
 // FUNCTIONS
 
@@ -305,16 +310,23 @@ const moveGhostAwayFromPacMan = (ghost) => {
 };
 
 
-setInterval(() => {
+intervalIDs.pathFindingIntervalID = setInterval(() => {
     pathFinding(pacManLocation);
 }, 100);
 
+
+const gameOver = () => {
+    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
+        clearInterval(value);
+    }
+    clearInterval(intervalIDs.pathFindingIntervalID);
+}
 
 let counter = 0;
 let brave = false;
 
 const ghostMovementHandler = (ghost) => {
-    setInterval(() => {
+    intervalIDs.ghostMovementHandlerIntervalID[ghost.name] = setInterval(() => {
         if (ghost.movementMode === PATHFINDING) {
             moveGhost(ghost, ghost.pathFinder);
         } else if (ghost.movementMode === DIRECT) {
@@ -338,6 +350,10 @@ const ghostMovementHandler = (ghost) => {
             } else {
                 moveGhostAwayFromPacMan(ghost);
             }
+        }
+        if (ghost.location === pacManLocation) {
+            console.log("game over");
+            gameOver();
         }
     }, ghost.speed);
 }
