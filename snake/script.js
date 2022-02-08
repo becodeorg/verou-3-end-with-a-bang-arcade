@@ -18,6 +18,8 @@ let tailLength = 2;
 
 let appleX = 5;
 let appleY = 5;
+const gulpSound = new Audio("biteAppleSound.mp3");
+const gameOverSound = new Audio("arcadeGameTone.mp3");
 
 let xVelocity = 0;
 let yVelocity = 0;
@@ -120,6 +122,7 @@ const checkApplePosition = () => {
         const score = document.getElementById("score");
         playerScore++;
         score.innerHTML = playerScore;
+        gulpSound.play();
     }
 };
 
@@ -150,8 +153,30 @@ const gameOver = () => {
         ctx.fillStyle = "red";
         ctx.font = "50px monospace";
         ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
+        gameOverSound.play();
     }
     return gameOver;
+};
+
+const changeSpeed = () => {
+    if (playerScore > 5) {
+        speed = 9;
+    }
+    if (playerScore > 10) {
+        speed = 11;
+    }
+    if (playerScore > 15) {
+        speed = 13;
+    }
+    if (playerScore > 20) {
+        speed = 15;
+    }
+    if (playerScore > 25) {
+        speed = 18;
+    }
+    if (playerScore > 30) {
+        speed = 21;
+    }
 };
 const gameLoop = () => {
     changeSnakeDirection();
@@ -166,6 +191,7 @@ const gameLoop = () => {
     drawApple();
     drawSnake();
 
+    changeSpeed();
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
