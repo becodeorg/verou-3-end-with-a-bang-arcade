@@ -1,0 +1,58 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+#theField{
+    background-color: rgba(248, 169, 248, 0.788);
+    ;
+    height: 60VH;
+    width: 60vw;
+
+}
+
+#ball{
+    width: 15px;
+    height: 15px;
+    border-radius: 50px;
+    background-color: rgb(245, 245, 149);
+    position: fixed;
+    top: calc(50% - 7.5px);
+    left: calc(50% - 7.5px);
+}
+
+#paddleOne{
+    height: 50px;
+    width: 10px;
+    background-color: rgb(245, 245, 149);
+    position: fixed;
+    top: calc(50% - 25px);
+    
+
+}
+
+#paddle-two{
+    height: 50px;
+    width: 10px;
+    background-color: rgb(245, 245, 149);
+    position: fixed;
+    top: calc(50% - 25px);
+    left: calc(100% - 20vw - 10px);
+    
+    
+}
+
+#the-net{
+    background-color: yellow;
+}
+
+#the-score{
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+}

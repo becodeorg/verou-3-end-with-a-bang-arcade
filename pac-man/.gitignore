@@ -1,0 +1,4 @@
+*.css.map
+.vscode
+.DS_Store
+notes.md
