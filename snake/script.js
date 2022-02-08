@@ -1,12 +1,20 @@
 const snakeBoard = document.getElementById("snakeCanvas");
 const ctx = snakeBoard.getContext("2d");
 
+class SnakePart {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
 let speed = 7;
 
 let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
 let tileSize = snakeBoard.width / tileCount - 2; //if size of canvas or tileCount changes, this will be new tileSize
 let snakeHeadX = 10;
 let snakeHeadY = 10;
+const snakeParts = [];
+let tailLength = 2;
 
 let appleX = 5;
 let appleY = 5;
@@ -26,7 +34,22 @@ function clearCanvas() {
 }
 
 const drawSnake = () => {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "lightgreen"; //this is colour of snake body
+    for (let i = 0; i < snakeParts.length; i++) {
+        let part = snakeParts[i];
+        ctx.fillRect(
+            part.x * tileCount,
+            part.y * tileCount,
+            tileSize,
+            tileSize
+        );
+    }
+    snakeParts.push(new SnakePart(snakeHeadX, snakeHeadY)); //each time snake is drawn, we push a part to where the head was
+    while (snakeParts.length > tailLength) {
+        snakeParts.shift(); //The shift() method removes the 1st element from array + returns that removed element + changes the length of the array
+    }
+
+    ctx.fillStyle = "red"; //this is colour of snake head
     ctx.fillRect(
         snakeHeadX * tileCount,
         snakeHeadY * tileCount,
@@ -91,6 +114,7 @@ const checkApplePosition = () => {
         // if snakehead and apple collide
         appleX = Math.floor(Math.random() * tileCount); //apple will move to random location inside our canvas
         appleY = Math.floor(Math.random() * tileCount);
+        tailLength++; //tail will get longer on collision
     }
 };
 
