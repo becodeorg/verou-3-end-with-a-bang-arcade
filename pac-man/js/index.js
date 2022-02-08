@@ -60,54 +60,45 @@ const createGameField = () => {
 createGameField();
 
 
-// PAC-MAN
+const gameOver = () => {
+    console.log("game over");
 
-const checkFood = () => {
-    const location = gameFieldGrid.children[pacManLocation];
-    if (location.classList.contains(PELLET)) {
-        location.classList.remove(PELLET);
-        location.classList.add(EMPTY);
-    } else if (location.classList.contains(POWER_PELLET)) {
-        location.classList.remove(POWER_PELLET);
-        location.classList.add(EMPTY);
-        powerPelletActive = true;
-        console.log("power pellet active!");
-        setTimeout(() => {
-            powerPelletActive = false;
-            console.log("power pellet wore off");
-        }, 7000);
+    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
+        clearInterval(value);
     }
-};
+    clearInterval(intervalIDs.pathFindingIntervalID);
+    clearInterval(intervalIDs.startPacManMovingID);
 
-const attemptMove = (requestedLocation) => {
-    if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
-        gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
-        gameFieldGrid.children[requestedLocation].classList.add("pac-man");
-        pacManLocation = requestedLocation;
+    gameRunning = false;
+}
 
-        return (true);
-    } else {
-        return (false);
-    }
-};
-
-
-
-// GHOSTS
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-const moveGhost = (ghost, direction) => {
+const eatGhost = (ghost) => {
+    console.log("ate " + ghost.name);
     gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
-    ghost.location = direction;
+    ghost.location = ghost.startLocation;
     gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
-};
+}
+
+const ghostContact = (ghost) => {
+    if (powerPelletActive) {
+        eatGhost(ghost);
+    } else {
+        gameOver();
+    }
+}
 
 
 const checkIfCellIsTypes = (location, types) => {
     const locationType = gameFieldGrid.children[location].classList[1];
     return (types.includes(locationType));
 }
+
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+
+
+// ----- GHOSTS -----
 
 
 const getNeighbors = (location) => {
@@ -176,10 +167,14 @@ const pathFinding = async (startLocation) => {
 }
 
 
-const attemptToMoveInDirection = (ghost, requestedLocation) => {
-    const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
+const moveGhost = (ghost, direction) => {
+    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+    ghost.location = direction;
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+};
 
-    if (requestedLocationType != WALL) {
+const attemptToMoveInDirection = (ghost, requestedLocation) => {
+    if (!checkIfCellIsTypes(requestedLocation, [WALL])) {
         moveGhost(ghost, requestedLocation);
         return (true);
     } else {
@@ -203,6 +198,7 @@ const attemptXAxisMove = (ghost, xDelta) => {
         return (attemptToMoveInDirection(ghost, ghost.location + 1)); // right
     }
 }
+
 const attemptYAxisMove = (ghost, yDelta) => {
     if (yDelta > 0) {
         return (attemptToMoveInDirection(ghost, ghost.location - 28)); // up
@@ -237,6 +233,7 @@ const moveGhostInDirectionOfPacMan = (ghost) => {
 
     return (true);
 };
+
 
 const moveGhostAwayFromPacMan = (ghost) => {
     const directionPossibilities = [];
@@ -277,43 +274,6 @@ const moveGhostAwayFromPacMan = (ghost) => {
 };
 
 
-const gameOver = () => {
-    console.log("game over");
-
-    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
-        clearInterval(value);
-    }
-    clearInterval(intervalIDs.pathFindingIntervalID);
-    clearInterval(intervalIDs.startPacManMovingID);
-
-    gameRunning = false;
-}
-
-const eatGhost = (ghost) => {
-    console.log("ate " + ghost.name);
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
-    ghost.location = ghost.startLocation;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
-}
-
-const ghostContact = (ghost) => {
-    if (powerPelletActive) {
-        eatGhost(ghost);
-    } else {
-        gameOver();
-    }
-}
-
-const checkGhostContact = () => {
-    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
-        const ghost = ghosts.filter(ghost => {
-            return ghost.location === pacManLocation;
-        })
-        ghostContact(ghost[0]);
-    }
-}
-
-
 let counter = 0;
 let brave = false;
 
@@ -352,6 +312,48 @@ const ghostMovementHandler = (ghost) => {
     }, ghost.speed);
 }
 
+
+
+// ----- PAC-MAN -----
+
+
+const checkGhostContact = () => {
+    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
+        const ghost = ghosts.filter(ghost => {
+            return ghost.location === pacManLocation;
+        })
+        ghostContact(ghost[0]);
+    }
+}
+
+const checkFood = () => {
+    const location = gameFieldGrid.children[pacManLocation];
+    if (location.classList.contains(PELLET)) {
+        location.classList.remove(PELLET);
+        location.classList.add(EMPTY);
+    } else if (location.classList.contains(POWER_PELLET)) {
+        location.classList.remove(POWER_PELLET);
+        location.classList.add(EMPTY);
+        powerPelletActive = true;
+        console.log("power pellet active!");
+        setTimeout(() => {
+            powerPelletActive = false;
+            console.log("power pellet wore off");
+        }, 7000);
+    }
+};
+
+const attemptMove = (requestedLocation) => {
+    if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
+        gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
+        gameFieldGrid.children[requestedLocation].classList.add("pac-man");
+        pacManLocation = requestedLocation;
+
+        return (true);
+    } else {
+        return (false);
+    }
+};
 
 let movementDirection = "a";
 let queuedDirection;
@@ -422,6 +424,10 @@ const pacManMovementHandler = () => {
         checkFood();
     }, 100);
 };
+
+
+
+// ----- MAIN CONTROL -----
 
 
 const runGame = () => {
@@ -517,13 +523,12 @@ const handleKeyEvent = (event) => {
             default:
                 break;
         }
-
-        checkGhostContact();
-        checkFood();
     }
 }
 
 
+
 // EVENT LISTENERS
+
 
 window.addEventListener("keydown", handleKeyEvent);
