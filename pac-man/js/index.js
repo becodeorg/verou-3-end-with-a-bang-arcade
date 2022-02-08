@@ -62,7 +62,7 @@ createGameField();
 
 // PAC-MAN
 
-const checkForFood = () => {
+const checkFood = () => {
     const location = gameFieldGrid.children[pacManLocation];
     if (location.classList.contains(PELLET)) {
         location.classList.remove(PELLET);
@@ -80,18 +80,15 @@ const checkForFood = () => {
 };
 
 const attemptMove = (requestedLocation) => {
-    const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
-
-    if (requestedLocationType != WALL
-        && requestedLocationType != GHOST_LAIR) {
-
+    if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
         gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
         gameFieldGrid.children[requestedLocation].classList.add("pac-man");
         pacManLocation = requestedLocation;
 
         return (true);
+    } else {
+        return (false);
     }
-    return (false);
 };
 
 
@@ -106,18 +103,12 @@ const moveGhost = (ghost, direction) => {
     gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
 };
 
-const checkIfCellIsWall = (location) => {
-    if (gameFieldGrid.children[location].classList.contains(WALL)) {
-        return (true);
-    } else {
-        return (false);
-    }
-}
 
 const checkIfCellIsTypes = (location, types) => {
     const locationType = gameFieldGrid.children[location].classList[1];
     return (types.includes(locationType));
 }
+
 
 const getNeighbors = (location) => {
     const neighbors = [];
@@ -126,16 +117,16 @@ const getNeighbors = (location) => {
     const upNeighbor = location + gameFieldWidth;
     const downNeighbor = location - gameFieldWidth;
 
-    if (checkIfCellIsWall(rightNeighbor) === false) {
+    if (!checkIfCellIsTypes(rightNeighbor, [WALL])) {
         neighbors.push(rightNeighbor);
     }
-    if (checkIfCellIsWall(leftNeighbor) === false) {
+    if (!checkIfCellIsTypes(leftNeighbor, [WALL])) {
         neighbors.push(leftNeighbor);
     }
-    if (checkIfCellIsWall(upNeighbor) === false) {
+    if (!checkIfCellIsTypes(upNeighbor, [WALL])) {
         neighbors.push(upNeighbor);
     }
-    if (checkIfCellIsWall(downNeighbor) === false) {
+    if (!checkIfCellIsTypes(downNeighbor, [WALL])) {
         neighbors.push(downNeighbor);
     }
 
@@ -254,16 +245,16 @@ const moveGhostAwayFromPacMan = (ghost) => {
     const up = ghost.location - 28;
     const down = ghost.location + 28;
 
-    if (!checkIfCellIsWall(up)) {
+    if (!checkIfCellIsTypes(up, [WALL])) {
         directionPossibilities.push(up);
     }
-    if (!checkIfCellIsWall(down)) {
+    if (!checkIfCellIsTypes(down, [WALL])) {
         directionPossibilities.push(down);
     }
-    if (!checkIfCellIsWall(left)) {
+    if (!checkIfCellIsTypes(left, [WALL])) {
         directionPossibilities.push(left);
     }
-    if (!checkIfCellIsWall(right)) {
+    if (!checkIfCellIsTypes(right, [WALL])) {
         directionPossibilities.push(right);
     }
 
@@ -313,6 +304,16 @@ const ghostContact = (ghost) => {
     }
 }
 
+const checkGhostContact = () => {
+    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
+        const ghost = ghosts.filter(ghost => {
+            return ghost.location === pacManLocation;
+        })
+        ghostContact(ghost[0]);
+    }
+}
+
+
 let counter = 0;
 let brave = false;
 
@@ -351,14 +352,14 @@ const ghostMovementHandler = (ghost) => {
     }, ghost.speed);
 }
 
+
 let movementDirection = "a";
 let queuedDirection;
 
-const startPacManMoving = () => {
+const pacManMovementHandler = () => {
     intervalIDs.startPacManMovingID = setInterval(() => {
 
         // check if queued direction has become an option, else continue in current direction
-
         if (queuedDirection) {
             switch (queuedDirection) {
                 case "w": // up
@@ -416,30 +417,12 @@ const startPacManMoving = () => {
             default:
                 break;
         }
-        if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
-            const ghost = ghosts.filter(ghost => {
-                return ghost.location === pacManLocation;
-            })
-            ghostContact(ghost[0]);
-        }
 
-        checkForFood();
+        checkGhostContact();
+        checkFood();
     }, 100);
 };
 
-
-const movePacMan = async (pressedKey) => {
-    let currentDirection;
-    let queuedDirection;
-
-    // keydown: if can move in that direction
-    // move in that direction
-    // else: queue direction for a second in case it becomes available
-    // 
-    while (true) {
-        await sleep(300);
-    }
-}
 
 const runGame = () => {
     console.log("run game");
@@ -458,7 +441,9 @@ const runGame = () => {
     pacManLocation = 490;
     gameFieldGrid.children[pacManLocation].classList.add("pac-man")
 
-    startPacManMoving();
+    // start pac-man movement
+    pacManMovementHandler();
+
     // create ghosts
     ghosts.push(new Ghost("Blinky", 150, 347, PATHFINDING));
     ghosts.push(new Ghost("Pinky", 150, 403, DIRECT));
@@ -496,17 +481,15 @@ const handleKeyEvent = (event) => {
     }
 
     if (gameRunning) {
-        // movementDirection = pressedKey;
         switch (pressedKey) {
             case "w": // up
-                // check if possible, if yes, change movementDirection
-                // if not, put in queue
                 if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
                     movementDirection = pressedKey;
                 } else {
                     queuedDirection = pressedKey;
                 }
                 break;
+
             case "a": // left
                 if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
                     movementDirection = pressedKey;
@@ -514,6 +497,7 @@ const handleKeyEvent = (event) => {
                     queuedDirection = pressedKey;
                 }
                 break;
+
             case "s": // down
                 if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
                     movementDirection = pressedKey;
@@ -521,6 +505,7 @@ const handleKeyEvent = (event) => {
                     queuedDirection = pressedKey;
                 }
                 break;
+
             case "d": // right
                 if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
                     movementDirection = pressedKey;
@@ -532,40 +517,9 @@ const handleKeyEvent = (event) => {
             default:
                 break;
         }
-        // switch (pressedKey) {
-        //     case "w": // up
-        //         attemptMove(pacManLocation - gameFieldWidth);
-        //         break;
-        //     case "a": // left
-        //         if (pacManLocation === 364) {
-        //             attemptMove(391)
-        //         } else {
-        //             attemptMove(pacManLocation - 1);
-        //         }
-        //         break;
-        //     case "s": // down
-        //         attemptMove(pacManLocation + gameFieldWidth);
-        //         break;
-        //     case "d": // right
-        //         if (pacManLocation === 391) {
-        //             attemptMove(364);
-        //         } else {
-        //             attemptMove(pacManLocation + 1);
-        //         }
-        //         break;
 
-        //     default:
-        //         break;
-        // }
-
-        if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
-            const ghost = ghosts.filter(ghost => {
-                return ghost.location === pacManLocation;
-            })
-            ghostContact(ghost[0]);
-        }
-
-        checkForFood();
+        checkGhostContact();
+        checkFood();
     }
 }
 
