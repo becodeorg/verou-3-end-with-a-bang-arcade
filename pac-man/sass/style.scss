@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
 
-    border: 1px solid gray;
+    // border: 1px solid gray;
 }
 
 .game-field {
@@ -13,14 +13,33 @@
     grid-template-rows: repeat(28, 1fr);
     grid-template-columns: repeat(28, 1fr);
 
-    .type-0 {background-color: black;}
-    .type-1 {background-color: blue;}
-    .type-2 {background-color: gray;}
-    .type-3 {background-color: green;}
-    .type-4 {background-color: lightgray;}
+    .type-0 {
+        // background: radial-gradient(rgb(255, 228, 106) 30%, black 30%);
+        background-color: black;
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            top: 35%;
+            left: 35%;
+            height: 30%;
+            width: 30%;
+            background-color: yellow;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    } // pellet
+    .type-1 {background-color: rgb(28, 78, 214);} // wall
+    .type-2 {background-color: rgb(88, 88, 88);} // ghost lair
+    .type-3 {background-color: green;} // power pellet
+    .type-4 {background-color: black;} // empty
     .pac-man {background-color: yellow;}
+    
+    .ghost {border: 1px solid black};
     .Blinky {background-color: red;}
     .Pinky {background-color: pink;}
     .Inky {background-color: cyan;}
     .Clyde {background-color: orange;}
+    
+    .pathfinding {background-color: purple;}
 }
