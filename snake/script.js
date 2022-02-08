@@ -123,9 +123,44 @@ const checkApplePosition = () => {
     }
 };
 
+const gameOver = () => {
+    let gameOver = false; //initally it's not game over
+
+    if (yVelocity === 0 && xVelocity === 0) {
+        //when there's no movement (start game), it's not game over yet
+        return (gameOver = false);
+    }
+
+    //walls
+    if (snakeHeadX < 0 || snakeHeadY < 0) {
+        //in case we hit a side of canvas, game over
+        gameOver = true;
+    } else if (snakeHeadX === tileCount || snakeHeadY === tileCount) {
+        gameOver = true;
+    }
+    //snake body
+    for (let i = 0; i < snakeParts.length; i++) {
+        let part = snakeParts[i];
+        if (part.x === snakeHeadX && part.y === snakeHeadY) {
+            gameOver = true;
+            break; //stop looping
+        }
+    }
+    if (gameOver) {
+        ctx.fillStyle = "red";
+        ctx.font = "50px monospace";
+        ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
+    }
+    return gameOver;
+};
 const gameLoop = () => {
-    clearCanvas();
     changeSnakeDirection();
+    let result = gameOver();
+    if (result) {
+        return;
+    }
+
+    clearCanvas();
 
     checkApplePosition();
     drawApple();
