@@ -22,7 +22,9 @@ let appleY = 5;
 let xVelocity = 0;
 let yVelocity = 0;
 
-function clearCanvas() {
+let playerScore = 0;
+
+const clearCanvas = () => {
     //select the colour to fill the drawing
     ctx.fillStyle = "white";
     //select the colour for the border of the canvas
@@ -31,7 +33,7 @@ function clearCanvas() {
     ctx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
     //draw border around canvas
     ctx.strokeRect(0, 0, snakeBoard.width, snakeBoard.height);
-}
+};
 
 const drawSnake = () => {
     ctx.fillStyle = "lightgreen"; //this is colour of snake body
@@ -115,15 +117,20 @@ const checkApplePosition = () => {
         appleX = Math.floor(Math.random() * tileCount); //apple will move to random location inside our canvas
         appleY = Math.floor(Math.random() * tileCount);
         tailLength++; //tail will get longer on collision
+        const score = document.getElementById("score");
+        playerScore++;
+        score.innerHTML = playerScore;
     }
 };
 
 const gameLoop = () => {
     clearCanvas();
     changeSnakeDirection();
+
     checkApplePosition();
     drawApple();
     drawSnake();
+
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
