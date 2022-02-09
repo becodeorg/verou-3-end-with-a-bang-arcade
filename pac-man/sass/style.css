@@ -1,11 +1,48 @@
+<<<<<<< HEAD
+/* No CSS *//*# sourceMappingURL=style.css.map */
+=======
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+body {
+  position: relative;
+}
+
+.game-field-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.message {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  padding: 30px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.default {
+  display: block;
+  background-color: #fff;
+}
+
+.game-over {
+  background-color: black;
+  color: white;
+}
+
+.win {
+  background-color: #fff;
+}
+
 .game-field {
-  height: 100vh;
+  height: 100vw;
   width: 100vw;
   display: grid;
   grid-template-rows: repeat(28, 1fr);
@@ -56,8 +93,13 @@
 .game-field .Clyde {
   background-color: orange;
 }
+.game-field .afraid {
+  background-color: blue;
+  border: 1px solid white;
+}
 .game-field .pathfinding {
   background-color: purple;
 }
 
 /*# sourceMappingURL=style.css.map */
+>>>>>>> 46908da290bdf91e7d7d60f95c3ba5c6dd694713

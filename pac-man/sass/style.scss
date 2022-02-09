@@ -6,8 +6,42 @@
     // border: 1px solid gray;
 }
 
+body {
+    position: relative;
+}
+
+.game-field-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.message {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    padding: 30px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.default {
+    display: block;
+    background-color: #fff;
+}
+
+.game-over {
+    background-color: black;
+    color: white;
+}
+
+.win {
+    background-color: #fff;
+}
+
 .game-field {
-    height: 100vh;
+    height: 100vw;
     width: 100vw;
     display: grid;
     grid-template-rows: repeat(28, 1fr);
@@ -41,5 +75,9 @@
     .Inky {background-color: cyan;}
     .Clyde {background-color: orange;}
     
+    .afraid {
+        background-color: blue;
+        border: 1px solid white;
+    }
     .pathfinding {background-color: purple;}
 }
