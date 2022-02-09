@@ -195,3 +195,8 @@ const gameLoop = () => {
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
+
+const restart = () => {};
+console.log(restart);
+const restartbtn = document.getElementById("restart");
+restartbtn.addEventListener("click", restart);
