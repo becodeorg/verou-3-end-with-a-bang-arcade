@@ -16,8 +16,8 @@ let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
 
-let appleX = 5;
-let appleY = 5;
+let appleX = Math.floor(Math.random() * tileCount);
+let appleY = Math.floor(Math.random() * tileCount);
 const gulpSound = new Audio("biteAppleSound.mp3");
 const gameOverSound = new Audio("arcadeGameTone.mp3");
 
@@ -25,8 +25,6 @@ let xVelocity = 0;
 let yVelocity = 0;
 
 let playerScore = 0;
-
-const img = new Image();
 
 const clearCanvas = () => {
     //select the colour to fill the drawing
@@ -112,13 +110,14 @@ const changeSnakeDirection = () => {
 };
 
 const drawApple = () => {
-    ctx.fillStyle = "green";
-    ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
-
-    /*img.src = "./apple.png";
-    img.onload = () => {
-        ctx.drawImage(img, 5 * tileCount, 5 * tileCount, 20, 20);
-    };*/
+    //ctx.fillStyle = "green";
+    //ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+    const apple = new Image();
+    apple.src = "./apple.png";
+    apple.onload = () => {
+        //wait until image of apple is loaded
+        ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20); //this will draw an apple (img)
+    };
 };
 
 const checkApplePosition = () => {
