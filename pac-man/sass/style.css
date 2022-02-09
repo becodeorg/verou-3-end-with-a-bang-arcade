@@ -87,8 +87,30 @@ body {
   background-color: black;
 }
 .game-field .pac-man {
+  position: relative;
   background-color: yellow;
   border-radius: 50%;
+}
+.game-field .pac-man::after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  bottom: 0;
+  right: 0;
+  background-color: black;
+}
+.game-field .pac-man.d {
+  transform: rotate(-45deg);
+}
+.game-field .pac-man.a {
+  transform: rotate(135deg);
+}
+.game-field .pac-man.w {
+  transform: rotate(225deg);
+}
+.game-field .pac-man.s {
+  transform: rotate(45deg);
 }
 .game-field .ghost {
   border: 1px solid black;

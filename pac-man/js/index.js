@@ -402,8 +402,8 @@ const checkFood = () => {
 
 const attemptMove = (requestedLocation) => {
     if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
-        gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
-        gameFieldGrid.children[requestedLocation].classList.add("pac-man");
+        gameFieldGrid.children[pacManLocation].classList.remove("pac-man", "w", "a", "s", "d");
+        gameFieldGrid.children[requestedLocation].classList.add("pac-man", movementDirection);
         pacManLocation = requestedLocation;
 
         return (true);

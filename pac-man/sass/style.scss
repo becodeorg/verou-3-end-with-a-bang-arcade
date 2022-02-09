@@ -87,8 +87,23 @@ body {
     }
     .type-4 {background-color: black;} // empty
     .pac-man {
+        position: relative;
         background-color: yellow;
         border-radius: 50%;
+
+        &::after {
+            content: '';
+            position: absolute;
+            width: 50%;  
+            top: 50%;
+            bottom: 0;
+            right: 0;
+            background-color: black;
+        }
+        &.d {transform: rotate(-45deg);}
+        &.a {transform: rotate(135deg);}
+        &.w {transform: rotate(225deg);}
+        &.s {transform: rotate(45deg);}
     }
     
     .ghost {
