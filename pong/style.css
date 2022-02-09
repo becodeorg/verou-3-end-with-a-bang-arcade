@@ -1,6 +1,7 @@
 *{
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 body{
     display: flex;
@@ -10,7 +11,7 @@ body{
     height: 100vh;
 }
 #theField{
-    background-color: rgba(248, 169, 248, 0.788);
+    background-color: rgba(43, 43, 43, 0.788);
     ;
     height: 60VH;
     width: 60vw;
@@ -55,4 +56,22 @@ body{
 #the-score{
     font-family: 'Work Sans', sans-serif;
     font-weight: 500;
+    position: fixed;
+    left: calc(25vw + 8%);
+    top: calc(25vh - 20px );
+}
+#the-score2{
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    position: fixed;
+    top: calc(25vh - 20px);
+    left: calc(50vw + 17%);
+}
+
+#info{
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    position: fixed;
+    top: calc(25vh - 20px);
+    left: calc(50vw - 11% );
 }
