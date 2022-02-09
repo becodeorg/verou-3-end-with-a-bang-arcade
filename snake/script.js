@@ -28,9 +28,10 @@ let playerScore = 0;
 
 const clearCanvas = () => {
     //select the colour to fill the drawing
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "rgb(17, 5, 44)";
     //select the colour for the border of the canvas
     ctx.strokestyle = "black";
+    ctx.lineWidth = 5;
     //draw filled rectangle to cover entire canvas
     ctx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
     //draw border around canvas
@@ -53,7 +54,7 @@ const drawSnake = () => {
         snakeParts.shift(); //The shift() method removes the 1st element from array + returns that removed element + changes the length of the array
     }
 
-    ctx.fillStyle = "red"; //this is colour of snake head
+    ctx.fillStyle = "#FF4848"; //this is colour of snake head
     ctx.fillRect(
         snakeHeadX * tileCount,
         snakeHeadY * tileCount,
