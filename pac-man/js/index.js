@@ -27,8 +27,13 @@ let gameRunning = false;
 let powerPelletActive = false;
 let pacManLocation = 490; // game field index
 let score = 0;
-const scoreP = document.querySelector(".score");
 let foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+
+const scoreP = document.querySelector(".score");
+const defaultMessageDiv = document.querySelector(".default");
+const gameOverMessageDiv = document.querySelector(".game-over");
+const winMessageDiv = document.querySelector(".win");
+const gameFieldGrid = document.querySelector(".game-field");
 
 
 class Ghost {
@@ -56,7 +61,6 @@ const intervalIDs = {
 // SET UP
 
 // fill grid with cells
-const gameFieldGrid = document.querySelector(".game-field");
 const createGameField = () => {
 
     for (let i = 0; i < gameFieldLayout.length; i++) {
@@ -71,8 +75,10 @@ createGameField();
 const endGame = (status) => {
     if (status === WIN) {
         console.log("YOU WIN!");
+        winMessageDiv.style.display = "block";
     } else {
         console.log("GAME OVER!");
+        gameOverMessageDiv.style.display = "block";
     }
 
     for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
@@ -463,8 +469,6 @@ const pacManMovementHandler = () => {
         checkGhostContact();
         checkFood();
         scoreP.textContent = score;
-        // const foodRemaining = gameFieldLayout.filter(x => x == 0).length;
-        console.log(foodRemaining);
         if (foodRemaining === 0) {
             endGame(WIN);
         }
@@ -481,6 +485,10 @@ const runGame = () => {
     console.log("run game");
 
     score = 0;
+
+    defaultMessageDiv.style.display = "none";
+    gameOverMessageDiv.style.display = "none";
+    winMessageDiv.style.display = "none";
 
     if (ghosts.length > 0) {
         // remove ghosts from grid
