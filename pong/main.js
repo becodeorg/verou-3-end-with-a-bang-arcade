@@ -12,6 +12,8 @@ let paddleTwoCoor = paddleTwo.getBoundingClientRect();
 let fieldCoor = theField.getBoundingClientRect();
 const ballStartingCoor = ballStarting.getBoundingClientRect(); // Keep the ball coor when in the middle of field
 let baballCoor = ballStartingCoor;
+let a = 0;
+let b = 0;
 // need a paddle class to organise the gen position of them
 // const paddleSCommon = document
 //   .querySelector(".paddles")
@@ -28,7 +30,7 @@ document.addEventListener("keydown", (event) => {
     /* the line above is a ternary operator, if gameStatus is = startingScreen it'll become play and opposite by pressing enter*/
   }
 
-  if (gameStatus === "play") {
+  if ((gameStatus === "play") && (event.key==="Enter")) {
     info.textContent = "Game Started";
     requestAnimationFrame(() => {
       directionX = Math.floor(Math.random() * 4) + 3;
@@ -96,16 +98,16 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                       &&
                       baballCoor.bottom <= paddleTwoCoor.bottom){
                         directionXd = 1;
-                        // directionX = Math.floor(Math.random() * 4) + 3;
-                        // directionY = Math.floor(Math.random() * 4) + 3;  // if those two are uncommented, the speed and direction change after touching a wall ^^
+                        directionX = Math.floor(Math.random() * 4) + 3;
+                        directionY = Math.floor(Math.random() * 4) + 3;  // if those two are uncommented, the speed and direction change after touching a wall ^^
                         }
 
                     if (baballCoor.right >= paddleTwoCoor.left // same for paddle right
                       && baballCoor.top >= paddleTwoCoor.top
                       && baballCoor.bottom <= paddleTwoCoor.bottom){
                         directionXd = 0;
-                        // directionX = Math.floor(Math.random() * 4) + 3 ;
-                        // directionY = Math.floor(Math.random() * 4) + 3 ;
+                        directionX = Math.floor(Math.random() * 4) + 3 ;
+                        directionY = Math.floor(Math.random() * 4) + 3 ;
                       }    
 
                       // score implement + restart
@@ -113,13 +115,15 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                          || baballCoor.right >= fieldCoor.right
                         ){
                           
-                          //TODO:  put a scoring system
-                          // if ( baballCoor.left<= fieldCoor.left){
-                          //   score2.innerHTML = score2 + 1; // not sure, maybe need to add a "+" sign before the score2 ?
-                          // }
-                          // else {
-                          //   score1.innerHTML = score1 +1;
-                          // }
+                          
+                          if ( baballCoor.left<= fieldCoor.left){
+                            b = b + 1
+                            score2.textContent = b; 
+                          }
+                          else {
+                            a = a + 1
+                            score1.textContent = a ;
+                          }
                           gameStatus = "startingScreen'"
                           baballCoor = ballStartingCoor; // here pressing enter bug ! 
                           info.textContent = " ENTER = POOOONG "

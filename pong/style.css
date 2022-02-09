@@ -29,7 +29,7 @@ body{
 }
 
 #paddleOne{
-    height: 50px;
+    height: 100px;
     width: 10px;
     background-color: rgb(245, 245, 149);
     position: fixed;
@@ -39,7 +39,7 @@ body{
 }
 
 #paddleTwo{
-    height: 50px;
+    height: 100px;
     width: 10px;
     background-color: rgb(245, 245, 149);
     position: fixed;
