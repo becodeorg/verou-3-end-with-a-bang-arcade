@@ -26,6 +26,8 @@ let yVelocity = 0;
 
 let playerScore = 0;
 
+const img = new Image();
+
 const clearCanvas = () => {
     //select the colour to fill the drawing
     ctx.fillStyle = "rgb(17, 5, 44)";
@@ -112,6 +114,11 @@ const changeSnakeDirection = () => {
 const drawApple = () => {
     ctx.fillStyle = "green";
     ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+
+    /*img.src = "./apple.png";
+    img.onload = () => {
+        ctx.drawImage(img, 5 * tileCount, 5 * tileCount, 20, 20);
+    };*/
 };
 
 const checkApplePosition = () => {
@@ -151,7 +158,7 @@ const gameOver = () => {
         }
     }
     if (gameOver) {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "rgb(233, 0, 255)";
         ctx.font = "50px monospace";
         ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
         gameOverSound.play();
