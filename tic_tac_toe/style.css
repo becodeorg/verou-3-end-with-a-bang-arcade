@@ -103,37 +103,16 @@ body{
 };
 
 
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
- 
-  
-  
-  
-  
-  
-  /*disable the hover effect when a square is already selected
-      or when the game is over */
-  .gameOver .square:hover,
+  .gameOver .square:hover,   /*disable the hover (selected/game over)*/
   .square.X:hover,
   .square.O:hover {
     background-color: inherit;
     cursor: default;
   }
   
-  /* display outline and foreground overlapping and center contents */
   
-  .square .outline {
+  
+  .square .outline { /* display outline and foreground overlapping and center contents */
     position: absolute;
     display: flex;
     justify-content: center;
