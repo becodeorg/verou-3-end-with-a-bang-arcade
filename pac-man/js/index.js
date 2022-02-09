@@ -19,14 +19,16 @@ const AWAY = "away"
 const AFRAID = "afraid";
 const UNAFRAID = "unafraid";
 
+const WIN = true;
+const GAME_OVER = false;
+
 const gameFieldWidth = 28;
 let gameRunning = false;
 let powerPelletActive = false;
 let pacManLocation = 490; // game field index
 let score = 0;
 const scoreP = document.querySelector(".score");
-// const winScore = gameFieldLayout.filter(x => x == 0).length;
-// console.log(winScore);
+let foodRemaining = gameFieldLayout.filter(x => x == 0).length;
 
 
 class Ghost {
@@ -66,8 +68,12 @@ const createGameField = () => {
 createGameField();
 
 
-const gameOver = () => {
-    console.log("game over");
+const endGame = (status) => {
+    if (status === WIN) {
+        console.log("YOU WIN!");
+    } else {
+        console.log("GAME OVER!");
+    }
 
     for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
         clearInterval(value);
@@ -90,7 +96,7 @@ const ghostContact = (ghost) => {
     if (powerPelletActive) {
         eatGhost(ghost);
     } else {
-        gameOver();
+        endGame(GAME_OVER);
     }
 }
 
@@ -353,6 +359,7 @@ const checkFood = () => {
         location.classList.remove(PELLET);
         location.classList.add(EMPTY);
         score += 10;
+        foodRemaining--;
     } else if (location.classList.contains(POWER_PELLET)) {
         if (powerPelletActive === false) {
             console.log("power pellet active!");
@@ -456,6 +463,12 @@ const pacManMovementHandler = () => {
         checkGhostContact();
         checkFood();
         scoreP.textContent = score;
+        // const foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+        console.log(foodRemaining);
+        if (foodRemaining === 0) {
+            endGame(WIN);
+        }
+
     }, 100);
 };
 
