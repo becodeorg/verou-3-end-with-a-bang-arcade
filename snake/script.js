@@ -196,7 +196,8 @@ const gameLoop = () => {
 };
 gameLoop();
 
-const restart = () => {};
-console.log(restart);
+const restart = () => {
+    location.reload(); //this does the same as refresh page :) finally something simple
+};
 const restartbtn = document.getElementById("restart");
 restartbtn.addEventListener("click", restart);
