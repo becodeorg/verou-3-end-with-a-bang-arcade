@@ -56,6 +56,9 @@
 .game-field .Clyde {
   background-color: orange;
 }
+.game-field .afraid {
+  background-color: blue;
+}
 .game-field .pathfinding {
   background-color: purple;
 }

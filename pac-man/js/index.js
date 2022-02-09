@@ -16,6 +16,9 @@ const PATHFINDING = "pathfinding";
 const DIRECT = "direct";
 const AWAY = "away"
 
+const AFRAID = "afraid";
+const UNAFRAID = "unafraid";
+
 const gameFieldWidth = 28;
 
 let gameRunning = false;
@@ -33,6 +36,7 @@ class Ghost {
         this.movementMode = movementMode;
     }
     pathFinder;
+    afraidStatus = UNAFRAID;
 }
 
 const ghosts = []
@@ -74,9 +78,9 @@ const gameOver = () => {
 
 const eatGhost = (ghost) => {
     console.log("ate " + ghost.name);
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
     ghost.location = ghost.startLocation;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
 }
 
 const ghostContact = (ghost) => {
@@ -168,9 +172,23 @@ const pathFinding = async (startLocation) => {
 
 
 const moveGhost = (ghost, direction) => {
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+    // if there is another ghost in the cell, only remove ghost.name
+    let otherGhostPresent = false;
+
+    for (const otherGhost of ghosts) {
+        if (otherGhost.location === ghost.location
+            && otherGhost.name !== ghost.name) {
+            otherGhostPresent = true;
+        }
+    }
+    if (otherGhostPresent) {
+        gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+    } else {
+        gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
+    }
+
     ghost.location = direction;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
 };
 
 const attemptToMoveInDirection = (ghost, requestedLocation) => {
@@ -333,13 +351,20 @@ const checkFood = () => {
         location.classList.add(EMPTY);
     } else if (location.classList.contains(POWER_PELLET)) {
         if (powerPelletActive === false) {
+            console.log("power pellet active!");
             location.classList.remove(POWER_PELLET);
             location.classList.add(EMPTY);
             powerPelletActive = true;
-            console.log("power pellet active!");
+            for (const ghost of ghosts) {
+                ghost.afraidStatus = AFRAID;
+            }
             setTimeout(() => {
-                powerPelletActive = false;
                 console.log("power pellet wore off");
+                powerPelletActive = false;
+                for (const ghost of ghosts) {
+                    ghost.afraidStatus = UNAFRAID;
+                    gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
+                }
             }, 7000);
         } else {
             return;
@@ -440,7 +465,7 @@ const runGame = () => {
     if (ghosts.length > 0) {
         // remove ghosts from grid
         for (const ghost of ghosts) {
-            gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+            gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
         }
         // empty ghosts list
         while (ghosts.pop());
@@ -464,7 +489,7 @@ const runGame = () => {
 
     // place ghosts on game field
     for (const ghost of ghosts) {
-        gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+        gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
     }
 
     // start pathfinding
