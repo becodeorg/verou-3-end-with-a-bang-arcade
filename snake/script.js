@@ -195,3 +195,9 @@ const gameLoop = () => {
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
+
+const restart = () => {
+    location.reload(); //this does the same as refresh page :) finally something simple
+};
+const restartbtn = document.getElementById("restart");
+restartbtn.addEventListener("click", restart);
