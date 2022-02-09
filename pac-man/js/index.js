@@ -25,9 +25,11 @@ const GAME_OVER = false;
 const gameFieldWidth = 28;
 let gameRunning = false;
 let powerPelletActive = false;
-let pacManLocation = 490; // game field index
-let score = 0;
-let foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+let pacManLocation; // game field index
+let movementDirection;
+let queuedDirection;
+let score;
+let foodRemaining;
 
 const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
@@ -48,7 +50,12 @@ class Ghost {
     afraidStatus = UNAFRAID;
 }
 
-const ghosts = []
+const ghosts = [
+    new Ghost("Blinky", 150, 347, PATHFINDING),
+    new Ghost("Pinky", 150, 403, DIRECT),
+    new Ghost("Inky", 200, 408, DIRECT),
+    new Ghost("Clyde", 200, 352, AWAY),
+];
 
 const intervalIDs = {
     ghostMovementHandlerIntervalID: {},
@@ -56,11 +63,10 @@ const intervalIDs = {
 };
 
 
+
 // FUNCTIONS
 
-// SET UP
 
-// fill grid with cells
 const createGameField = () => {
 
     for (let i = 0; i < gameFieldLayout.length; i++) {
@@ -406,8 +412,6 @@ const attemptMove = (requestedLocation) => {
     }
 };
 
-let movementDirection = "a";
-let queuedDirection;
 
 const pacManMovementHandler = () => {
     intervalIDs.startPacManMovingID = setInterval(() => {
@@ -490,6 +494,7 @@ const runGame = () => {
     console.log("run game");
 
     refreshGameField();
+
     foodRemaining = gameFieldLayout.filter(x => x == 0).length;
 
     score = 0;
@@ -498,17 +503,7 @@ const runGame = () => {
     gameOverMessageDiv.style.display = "none";
     winMessageDiv.style.display = "none";
 
-    if (ghosts.length > 0) {
-        // remove ghosts from grid
-        for (const ghost of ghosts) {
-            gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
-        }
-        // empty ghosts list
-        while (ghosts.pop());
-    }
-
     // replace pac-man on game field
-    gameFieldGrid.children[pacManLocation].classList.remove("pac-man")
     pacManLocation = 490;
     gameFieldGrid.children[pacManLocation].classList.add("pac-man")
 
@@ -517,11 +512,11 @@ const runGame = () => {
     queuedDirection = "";
     pacManMovementHandler();
 
-    // create ghosts
-    ghosts.push(new Ghost("Blinky", 150, 347, PATHFINDING));
-    ghosts.push(new Ghost("Pinky", 150, 403, DIRECT));
-    ghosts.push(new Ghost("Inky", 200, 408, DIRECT));
-    ghosts.push(new Ghost("Clyde", 200, 352, AWAY));
+    // reset ghost location
+    ghosts[0].location = 347;
+    ghosts[1].location = 403;
+    ghosts[2].location = 408;
+    ghosts[3].location = 352;
 
     // place ghosts on game field
     for (const ghost of ghosts) {
