@@ -20,12 +20,14 @@ const AFRAID = "afraid";
 const UNAFRAID = "unafraid";
 
 const gameFieldWidth = 28;
-
 let gameRunning = false;
-
 let powerPelletActive = false;
-
 let pacManLocation = 490; // game field index
+let score = 0;
+const scoreP = document.querySelector(".score");
+// const winScore = gameFieldLayout.filter(x => x == 0).length;
+// console.log(winScore);
+
 
 class Ghost {
     constructor(name, speed, location, movementMode) {
@@ -81,6 +83,7 @@ const eatGhost = (ghost) => {
     gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
     ghost.location = ghost.startLocation;
     gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
+    score += 100;
 }
 
 const ghostContact = (ghost) => {
@@ -349,6 +352,7 @@ const checkFood = () => {
     if (location.classList.contains(PELLET)) {
         location.classList.remove(PELLET);
         location.classList.add(EMPTY);
+        score += 10;
     } else if (location.classList.contains(POWER_PELLET)) {
         if (powerPelletActive === false) {
             console.log("power pellet active!");
@@ -451,6 +455,7 @@ const pacManMovementHandler = () => {
 
         checkGhostContact();
         checkFood();
+        scoreP.textContent = score;
     }, 100);
 };
 
@@ -461,6 +466,8 @@ const pacManMovementHandler = () => {
 
 const runGame = () => {
     console.log("run game");
+
+    score = 0;
 
     if (ghosts.length > 0) {
         // remove ghosts from grid

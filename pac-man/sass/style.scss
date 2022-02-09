@@ -41,6 +41,9 @@
     .Inky {background-color: cyan;}
     .Clyde {background-color: orange;}
     
-    .afraid {background-color: blue;}
+    .afraid {
+        background-color: blue;
+        border: 1px solid white;
+    }
     .pathfinding {background-color: purple;}
 }

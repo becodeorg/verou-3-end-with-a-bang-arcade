@@ -58,6 +58,7 @@
 }
 .game-field .afraid {
   background-color: blue;
+  border: 1px solid white;
 }
 .game-field .pathfinding {
   background-color: purple;
