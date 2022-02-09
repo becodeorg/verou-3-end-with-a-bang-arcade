@@ -16,13 +16,25 @@ const PATHFINDING = "pathfinding";
 const DIRECT = "direct";
 const AWAY = "away"
 
+const AFRAID = "afraid";
+const UNAFRAID = "unafraid";
+
+const WIN = true;
+const GAME_OVER = false;
+
 const gameFieldWidth = 28;
-
 let gameRunning = false;
-
 let powerPelletActive = false;
-
 let pacManLocation = 490; // game field index
+let score = 0;
+let foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+
+const scoreP = document.querySelector(".score");
+const defaultMessageDiv = document.querySelector(".default");
+const gameOverMessageDiv = document.querySelector(".game-over");
+const winMessageDiv = document.querySelector(".win");
+const gameFieldGrid = document.querySelector(".game-field");
+
 
 class Ghost {
     constructor(name, speed, location, movementMode) {
@@ -33,6 +45,7 @@ class Ghost {
         this.movementMode = movementMode;
     }
     pathFinder;
+    afraidStatus = UNAFRAID;
 }
 
 const ghosts = []
@@ -48,7 +61,6 @@ const intervalIDs = {
 // SET UP
 
 // fill grid with cells
-const gameFieldGrid = document.querySelector(".game-field");
 const createGameField = () => {
 
     for (let i = 0; i < gameFieldLayout.length; i++) {
@@ -59,57 +71,59 @@ const createGameField = () => {
 };
 createGameField();
 
-
-// PAC-MAN
-
-const checkForFood = () => {
-    const location = gameFieldGrid.children[pacManLocation];
-    if (location.classList.contains(PELLET)) {
-        location.classList.remove(PELLET);
-        location.classList.add(EMPTY);
-    } else if (location.classList.contains(POWER_PELLET)) {
-        location.classList.remove(POWER_PELLET);
-        location.classList.add(EMPTY);
-        powerPelletActive = true;
-        console.log("power pellet active!");
-        setTimeout(() => {
-            powerPelletActive = false;
-            console.log("power pellet wore off");
-        }, 7000);
+const refreshGameField = () => {
+    for (let i = 0; i < gameFieldGrid.children.length; i++) {
+        gameFieldGrid.children[i].className = "cell type-" + gameFieldLayout[i];
     }
 };
 
-const attemptMove = (requestedLocation) => {
-    const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
-
-    if (requestedLocationType != WALL
-        && requestedLocationType != GHOST_LAIR) {
-
-        gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
-        gameFieldGrid.children[requestedLocation].classList.add("pac-man");
-        pacManLocation = requestedLocation;
+const endGame = (status) => {
+    if (status === WIN) {
+        console.log("YOU WIN!");
+        winMessageDiv.style.display = "block";
+    } else {
+        console.log("GAME OVER!");
+        gameOverMessageDiv.style.display = "block";
     }
-};
+
+    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
+        clearInterval(value);
+    }
+    clearInterval(intervalIDs.pathFindingIntervalID);
+    clearInterval(intervalIDs.startPacManMovingID);
+
+    gameRunning = false;
+}
+
+const eatGhost = (ghost) => {
+    console.log("ate " + ghost.name);
+    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
+    ghost.location = ghost.startLocation;
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
+    score += 100;
+}
+
+const ghostContact = (ghost) => {
+    if (powerPelletActive) {
+        eatGhost(ghost);
+    } else {
+        endGame(GAME_OVER);
+    }
+}
 
 
+const checkIfCellIsTypes = (location, types) => {
+    const locationType = gameFieldGrid.children[location].classList[1];
+    return (types.includes(locationType));
+}
 
-// GHOSTS
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-const moveGhost = (ghost, direction) => {
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
-    ghost.location = direction;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
-};
 
-const checkIfCellIsWall = (location) => {
-    if (gameFieldGrid.children[location].classList.contains(WALL)) {
-        return (true);
-    } else {
-        return (false);
-    }
-}
+
+// ----- GHOSTS -----
+
 
 const getNeighbors = (location) => {
     const neighbors = [];
@@ -118,16 +132,16 @@ const getNeighbors = (location) => {
     const upNeighbor = location + gameFieldWidth;
     const downNeighbor = location - gameFieldWidth;
 
-    if (checkIfCellIsWall(rightNeighbor) === false) {
+    if (!checkIfCellIsTypes(rightNeighbor, [WALL])) {
         neighbors.push(rightNeighbor);
     }
-    if (checkIfCellIsWall(leftNeighbor) === false) {
+    if (!checkIfCellIsTypes(leftNeighbor, [WALL])) {
         neighbors.push(leftNeighbor);
     }
-    if (checkIfCellIsWall(upNeighbor) === false) {
+    if (!checkIfCellIsTypes(upNeighbor, [WALL])) {
         neighbors.push(upNeighbor);
     }
-    if (checkIfCellIsWall(downNeighbor) === false) {
+    if (!checkIfCellIsTypes(downNeighbor, [WALL])) {
         neighbors.push(downNeighbor);
     }
 
@@ -177,10 +191,28 @@ const pathFinding = async (startLocation) => {
 }
 
 
-const attemptToMoveInDirection = (ghost, requestedLocation) => {
-    const requestedLocationType = gameFieldGrid.children[requestedLocation].classList[1];
+const moveGhost = (ghost, direction) => {
+    // if there is another ghost in the cell, only remove ghost.name
+    let otherGhostPresent = false;
 
-    if (requestedLocationType != WALL) {
+    for (const otherGhost of ghosts) {
+        if (otherGhost.location === ghost.location
+            && otherGhost.name !== ghost.name) {
+            otherGhostPresent = true;
+        }
+    }
+    if (otherGhostPresent) {
+        gameFieldGrid.children[ghost.location].classList.remove(ghost.name);
+    } else {
+        gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
+    }
+
+    ghost.location = direction;
+    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
+};
+
+const attemptToMoveInDirection = (ghost, requestedLocation) => {
+    if (!checkIfCellIsTypes(requestedLocation, [WALL])) {
         moveGhost(ghost, requestedLocation);
         return (true);
     } else {
@@ -204,6 +236,7 @@ const attemptXAxisMove = (ghost, xDelta) => {
         return (attemptToMoveInDirection(ghost, ghost.location + 1)); // right
     }
 }
+
 const attemptYAxisMove = (ghost, yDelta) => {
     if (yDelta > 0) {
         return (attemptToMoveInDirection(ghost, ghost.location - 28)); // up
@@ -239,6 +272,7 @@ const moveGhostInDirectionOfPacMan = (ghost) => {
     return (true);
 };
 
+
 const moveGhostAwayFromPacMan = (ghost) => {
     const directionPossibilities = [];
     const left = ghost.location - 1;
@@ -246,16 +280,16 @@ const moveGhostAwayFromPacMan = (ghost) => {
     const up = ghost.location - 28;
     const down = ghost.location + 28;
 
-    if (!checkIfCellIsWall(up)) {
+    if (!checkIfCellIsTypes(up, [WALL])) {
         directionPossibilities.push(up);
     }
-    if (!checkIfCellIsWall(down)) {
+    if (!checkIfCellIsTypes(down, [WALL])) {
         directionPossibilities.push(down);
     }
-    if (!checkIfCellIsWall(left)) {
+    if (!checkIfCellIsTypes(left, [WALL])) {
         directionPossibilities.push(left);
     }
-    if (!checkIfCellIsWall(right)) {
+    if (!checkIfCellIsTypes(right, [WALL])) {
         directionPossibilities.push(right);
     }
 
@@ -277,32 +311,6 @@ const moveGhostAwayFromPacMan = (ghost) => {
     moveGhost(ghost, movementDirection);
 };
 
-
-const gameOver = () => {
-    console.log("game over");
-
-    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
-        clearInterval(value);
-    }
-    clearInterval(intervalIDs.pathFindingIntervalID);
-
-    gameRunning = false;
-}
-
-const eatGhost = (ghost) => {
-    console.log("ate " + ghost.name);
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
-    ghost.location = ghost.startLocation;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
-}
-
-const ghostContact = (ghost) => {
-    if (powerPelletActive) {
-        eatGhost(ghost);
-    } else {
-        gameOver();
-    }
-}
 
 let counter = 0;
 let brave = false;
@@ -343,13 +351,157 @@ const ghostMovementHandler = (ghost) => {
 }
 
 
+
+// ----- PAC-MAN -----
+
+
+const checkGhostContact = () => {
+    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
+        const ghost = ghosts.filter(ghost => {
+            return ghost.location === pacManLocation;
+        })
+        ghostContact(ghost[0]);
+    }
+}
+
+const checkFood = () => {
+    const location = gameFieldGrid.children[pacManLocation];
+    if (location.classList.contains(PELLET)) {
+        location.classList.remove(PELLET);
+        location.classList.add(EMPTY);
+        score += 10;
+        foodRemaining--;
+    } else if (location.classList.contains(POWER_PELLET)) {
+        if (powerPelletActive === false) {
+            console.log("power pellet active!");
+            location.classList.remove(POWER_PELLET);
+            location.classList.add(EMPTY);
+            powerPelletActive = true;
+            for (const ghost of ghosts) {
+                ghost.afraidStatus = AFRAID;
+            }
+            setTimeout(() => {
+                console.log("power pellet wore off");
+                powerPelletActive = false;
+                for (const ghost of ghosts) {
+                    ghost.afraidStatus = UNAFRAID;
+                    gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
+                }
+            }, 7000);
+        } else {
+            return;
+        }
+    }
+};
+
+const attemptMove = (requestedLocation) => {
+    if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
+        gameFieldGrid.children[pacManLocation].classList.remove("pac-man");
+        gameFieldGrid.children[requestedLocation].classList.add("pac-man");
+        pacManLocation = requestedLocation;
+
+        return (true);
+    } else {
+        return (false);
+    }
+};
+
+let movementDirection = "a";
+let queuedDirection;
+
+const pacManMovementHandler = () => {
+    intervalIDs.startPacManMovingID = setInterval(() => {
+
+        // check if queued direction has become an option, else continue in current direction
+        if (queuedDirection) {
+            switch (queuedDirection) {
+                case "w": // up
+                    if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                        movementDirection = "w";
+                        queuedDirection = false;
+                    }
+                    break;
+                case "a": // left
+                    if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
+                        movementDirection = "a";
+                        queuedDirection = false;
+                    }
+                    break;
+                case "s": // down
+                    if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                        movementDirection = "s";
+                        queuedDirection = false;
+                    }
+                    break;
+                case "d": // right
+                    if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
+                        movementDirection = "d";
+                        queuedDirection = false;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        switch (movementDirection) {
+            case "w": // up
+                attemptMove(pacManLocation - gameFieldWidth);
+                break;
+            case "a": // left
+                if (pacManLocation === 364) {
+                    attemptMove(391)
+                } else {
+                    attemptMove(pacManLocation - 1);
+                }
+                break;
+            case "s": // down
+                attemptMove(pacManLocation + gameFieldWidth);
+                break;
+            case "d": // right
+                if (pacManLocation === 391) {
+                    attemptMove(364);
+                } else {
+                    attemptMove(pacManLocation + 1);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        checkGhostContact();
+        checkFood();
+        scoreP.textContent = score;
+        if (foodRemaining === 0) {
+            endGame(WIN);
+        }
+
+    }, 100);
+};
+
+
+
+// ----- MAIN CONTROL -----
+
+
 const runGame = () => {
     console.log("run game");
+
+    refreshGameField();
+    foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+
+    score = 0;
+
+    defaultMessageDiv.style.display = "none";
+    gameOverMessageDiv.style.display = "none";
+    winMessageDiv.style.display = "none";
 
     if (ghosts.length > 0) {
         // remove ghosts from grid
         for (const ghost of ghosts) {
-            gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name);
+            gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
         }
         // empty ghosts list
         while (ghosts.pop());
@@ -360,6 +512,11 @@ const runGame = () => {
     pacManLocation = 490;
     gameFieldGrid.children[pacManLocation].classList.add("pac-man")
 
+    // start pac-man movement
+    movementDirection = "a";
+    queuedDirection = "";
+    pacManMovementHandler();
+
     // create ghosts
     ghosts.push(new Ghost("Blinky", 150, 347, PATHFINDING));
     ghosts.push(new Ghost("Pinky", 150, 403, DIRECT));
@@ -368,7 +525,7 @@ const runGame = () => {
 
     // place ghosts on game field
     for (const ghost of ghosts) {
-        gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name);
+        gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
     }
 
     // start pathfinding
@@ -399,42 +556,46 @@ const handleKeyEvent = (event) => {
     if (gameRunning) {
         switch (pressedKey) {
             case "w": // up
-                attemptMove(pacManLocation - gameFieldWidth);
-                break;
-            case "a": // left
-                if (pacManLocation === 364) {
-                    attemptMove(391)
+                if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    movementDirection = pressedKey;
                 } else {
-                    attemptMove(pacManLocation - 1);
+                    queuedDirection = pressedKey;
                 }
                 break;
-            case "s": // down
-                attemptMove(pacManLocation + gameFieldWidth);
-                break;
-            case "d": // right
-                if (pacManLocation === 391) {
-                    attemptMove(364);
+
+            case "a": // left
+                if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
+                    movementDirection = pressedKey;
                 } else {
-                    attemptMove(pacManLocation + 1);
+                    queuedDirection = pressedKey;
+                }
+                break;
+
+            case "s": // down
+                if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    movementDirection = pressedKey;
+                } else {
+                    queuedDirection = pressedKey;
+                }
+                break;
+
+            case "d": // right
+                if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
+                    movementDirection = pressedKey;
+                } else {
+                    queuedDirection = pressedKey;
                 }
                 break;
 
             default:
                 break;
         }
-
-        if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
-            const ghost = ghosts.filter(ghost => {
-                return ghost.location === pacManLocation;
-            })
-            ghostContact(ghost[0]);
-        }
-
-        checkForFood();
     }
 }
 
 
+
 // EVENT LISTENERS
+
 
 window.addEventListener("keydown", handleKeyEvent);

@@ -26,11 +26,14 @@ let yVelocity = 0;
 
 let playerScore = 0;
 
+const img = new Image();
+
 const clearCanvas = () => {
     //select the colour to fill the drawing
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "rgb(17, 5, 44)";
     //select the colour for the border of the canvas
     ctx.strokestyle = "black";
+    ctx.lineWidth = 5;
     //draw filled rectangle to cover entire canvas
     ctx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
     //draw border around canvas
@@ -53,7 +56,7 @@ const drawSnake = () => {
         snakeParts.shift(); //The shift() method removes the 1st element from array + returns that removed element + changes the length of the array
     }
 
-    ctx.fillStyle = "red"; //this is colour of snake head
+    ctx.fillStyle = "#FF4848"; //this is colour of snake head
     ctx.fillRect(
         snakeHeadX * tileCount,
         snakeHeadY * tileCount,
@@ -111,6 +114,11 @@ const changeSnakeDirection = () => {
 const drawApple = () => {
     ctx.fillStyle = "green";
     ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+
+    /*img.src = "./apple.png";
+    img.onload = () => {
+        ctx.drawImage(img, 5 * tileCount, 5 * tileCount, 20, 20);
+    };*/
 };
 
 const checkApplePosition = () => {
@@ -150,7 +158,7 @@ const gameOver = () => {
         }
     }
     if (gameOver) {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "rgb(233, 0, 255)";
         ctx.font = "50px monospace";
         ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
         gameOverSound.play();
@@ -195,3 +203,9 @@ const gameLoop = () => {
     setTimeout(gameLoop, 1000 / speed);
 };
 gameLoop();
+
+const restart = () => {
+    location.reload(); //this does the same as refresh page :) finally something simple
+};
+const restartbtn = document.getElementById("restart");
+restartbtn.addEventListener("click", restart);
