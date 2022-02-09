@@ -536,50 +536,78 @@ const runGame = () => {
 };
 
 
+const handleMovementInput = (pressedKey) => {
+    switch (pressedKey) {
+        case "w": // up
+            if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                movementDirection = pressedKey;
+            } else {
+                queuedDirection = pressedKey;
+            }
+            break;
+
+        case "a": // left
+            if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
+                movementDirection = pressedKey;
+            } else {
+                queuedDirection = pressedKey;
+            }
+            break;
+
+        case "s": // down
+            if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                movementDirection = pressedKey;
+            } else {
+                queuedDirection = pressedKey;
+            }
+            break;
+
+        case "d": // right
+            if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
+                movementDirection = pressedKey;
+            } else {
+                queuedDirection = pressedKey;
+            }
+            break;
+
+        default:
+            break;
+    }
+};
+
 const handleKeyEvent = (event) => {
     const pressedKey = event.key;
 
-    if (pressedKey === " ") {
-        if (gameRunning === true) {
-            // pause() ?
-        } else {
-            gameRunning = true;
-            runGame();
-        }
+    if (!gameRunning) {
+        runGame();
+        gameRunning = true;
+    } else {
+        handleMovementInput(pressedKey);
     }
+}
 
-    if (gameRunning) {
-        switch (pressedKey) {
-            case "w": // up
-                if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
-                    movementDirection = pressedKey;
-                } else {
-                    queuedDirection = pressedKey;
-                }
+const handleTouchEvent = (event) => {
+    const quadrant = event.target.className;
+
+    if (!gameRunning) {
+        runGame();
+        gameRunning = true;
+    } else {
+        switch (quadrant) {
+            case "top":
+                handleMovementInput("w")
                 break;
 
-            case "a": // left
-                if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
-                    movementDirection = pressedKey;
-                } else {
-                    queuedDirection = pressedKey;
-                }
+            case "left":
+                handleMovementInput("a")
                 break;
 
-            case "s": // down
-                if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
-                    movementDirection = pressedKey;
-                } else {
-                    queuedDirection = pressedKey;
-                }
+            case "bottom":
+                handleMovementInput("s")
                 break;
 
-            case "d": // right
-                if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
-                    movementDirection = pressedKey;
-                } else {
-                    queuedDirection = pressedKey;
-                }
+            case "right":
+                handleMovementInput("d")
                 break;
 
             default:
@@ -594,3 +622,5 @@ const handleKeyEvent = (event) => {
 
 
 window.addEventListener("keydown", handleKeyEvent);
+const touchControlDiv = document.querySelector(".touch-control");
+touchControlDiv.addEventListener("touchstart", handleTouchEvent);
