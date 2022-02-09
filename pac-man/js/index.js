@@ -71,6 +71,11 @@ const createGameField = () => {
 };
 createGameField();
 
+const refreshGameField = () => {
+    for (let i = 0; i < gameFieldGrid.children.length; i++) {
+        gameFieldGrid.children[i].className = "cell type-" + gameFieldLayout[i];
+    }
+};
 
 const endGame = (status) => {
     if (status === WIN) {
@@ -483,6 +488,9 @@ const pacManMovementHandler = () => {
 
 const runGame = () => {
     console.log("run game");
+
+    refreshGameField();
+    foodRemaining = gameFieldLayout.filter(x => x == 0).length;
 
     score = 0;
 
