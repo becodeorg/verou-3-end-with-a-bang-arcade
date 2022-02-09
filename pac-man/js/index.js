@@ -332,14 +332,18 @@ const checkFood = () => {
         location.classList.remove(PELLET);
         location.classList.add(EMPTY);
     } else if (location.classList.contains(POWER_PELLET)) {
-        location.classList.remove(POWER_PELLET);
-        location.classList.add(EMPTY);
-        powerPelletActive = true;
-        console.log("power pellet active!");
-        setTimeout(() => {
-            powerPelletActive = false;
-            console.log("power pellet wore off");
-        }, 7000);
+        if (powerPelletActive === false) {
+            location.classList.remove(POWER_PELLET);
+            location.classList.add(EMPTY);
+            powerPelletActive = true;
+            console.log("power pellet active!");
+            setTimeout(() => {
+                powerPelletActive = false;
+                console.log("power pellet wore off");
+            }, 7000);
+        } else {
+            return;
+        }
     }
 };
 
@@ -448,6 +452,8 @@ const runGame = () => {
     gameFieldGrid.children[pacManLocation].classList.add("pac-man")
 
     // start pac-man movement
+    movementDirection = "a";
+    queuedDirection = "";
     pacManMovementHandler();
 
     // create ghosts
