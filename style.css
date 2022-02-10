@@ -15,4 +15,36 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 50px;
+    padding: 10px;
+}
+h1 {
+    font-weight: 400;
+}
+main {
+    padding: 5px;
+}
+main p {
+    text-align: center;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+section a {
+    margin: 15px;
+    transition: all .2s ease-in-out;
+}
+
+section a:hover {
+    transform: scale(1.05);
+}
+
+footer {
+    height: 50px;
+    padding: 10px;
+    text-align: center;
 }
