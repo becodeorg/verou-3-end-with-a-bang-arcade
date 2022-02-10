@@ -2,7 +2,8 @@
 
 import gameFieldLayout from "./gameFieldLayout.js";
 import { handleKeyEvent, handleTouchStart, handleTouchMove } from "./controls.js";
-
+import { pathFinding } from "./pathFinding.js";
+import { ghostMovementHandler, moveGhost } from "./ghostMovement.js";
 
 // GLOBAL VARIABLES
 document.documentElement.style.setProperty("--view-port-height", window.innerHeight + "px");
@@ -16,7 +17,7 @@ export const cellTypes = {
     EMPTY: "type-4",
 };
 
-const moveModes = {
+export const moveModes = {
     PATHFINDING: "pathfinding",
     DIRECT: "direct",
     STRANGE: "away",
@@ -54,7 +55,7 @@ const domElems = {
     winScoreP: document.querySelector(".win .score"),
     gameFieldGrid: document.querySelector(".game-field"),
 }
-const cells = domElems.gameFieldGrid.children;
+export const cells = domElems.gameFieldGrid.children;
 
 class Ghost {
     constructor(name, speed, location, movementMode) {
@@ -69,7 +70,7 @@ class Ghost {
     bravery = 0;
 }
 
-const ghosts = [];
+export const ghosts = [];
 
 const intervalIDs = {
     ghostMovementHandlerIntervalID: {},
@@ -140,230 +141,6 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 
 
-// ----- GHOSTS -----
-
-
-const getNeighbors = (location) => {
-    const neighbors = [];
-    const rightNeighbor = location + 1;
-    const leftNeighbor = location - 1;
-    const upNeighbor = location + game.GAME_FIELD_WIDTH;
-    const downNeighbor = location - game.GAME_FIELD_WIDTH;
-
-    if (!checkIfCellIsTypes(rightNeighbor, [cellTypes.WALL])) {
-        neighbors.push(rightNeighbor);
-    }
-    if (!checkIfCellIsTypes(leftNeighbor, [cellTypes.WALL])) {
-        neighbors.push(leftNeighbor);
-    }
-    if (!checkIfCellIsTypes(upNeighbor, [cellTypes.WALL])) {
-        neighbors.push(upNeighbor);
-    }
-    if (!checkIfCellIsTypes(downNeighbor, [cellTypes.WALL])) {
-        neighbors.push(downNeighbor);
-    }
-
-    return (neighbors);
-};
-
-const pathFinding = async (startLocation) => {
-    const floodFrontier = [];
-    const trailTrace = {};
-    let ghostsMoved = 0;
-
-    floodFrontier.push(startLocation);
-
-    while (floodFrontier.length > 0) {
-        const currentCell = floodFrontier.shift();
-        const neighborsOfCurrentCell = getNeighbors(currentCell);
-
-        for (const neighborCell of neighborsOfCurrentCell) {
-            if (!(neighborCell in trailTrace)) {
-                floodFrontier.push(neighborCell);
-                trailTrace[neighborCell] = currentCell;
-
-                // cells[neighborCell].classList.add("pathfinding");
-
-                for (const ghost of ghosts) {
-                    if (neighborCell === ghost.location) {
-                        ghost.pathFinder = currentCell;
-                        ghostsMoved++;
-                    }
-                }
-
-                if (ghostsMoved === ghosts.length) {
-                    return;
-                }
-
-                // await sleep(10);
-            }
-        }
-    }
-}
-
-
-const moveGhost = (ghost, direction) => {
-    // if there is another ghost in the cell, only remove ghost.name
-    let otherGhostPresent = false;
-
-    for (const otherGhost of ghosts) {
-        if (otherGhost.location === ghost.location
-            && otherGhost.name !== ghost.name) {
-            otherGhostPresent = true;
-        }
-    }
-    if (otherGhostPresent) {
-        cells[ghost.location].classList.remove(ghost.name);
-    } else {
-        cells[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
-    }
-
-    ghost.location = direction;
-    cells[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
-};
-
-const attemptToMoveInDirection = (ghost, requestedLocation) => {
-    if (!checkIfCellIsTypes(requestedLocation, [cellTypes.WALL])) {
-        moveGhost(ghost, requestedLocation);
-        return (true);
-    } else {
-        return (false);
-    }
-}
-
-const getCoords = (location) => {
-    const coords = [];
-
-    coords.x = location % game.GAME_FIELD_WIDTH;
-    coords.y = Math.floor(location / game.GAME_FIELD_WIDTH);
-
-    return (coords);
-};
-
-const attemptXAxisMove = (ghost, xDelta) => {
-    if (xDelta > 0) {
-        return (attemptToMoveInDirection(ghost, ghost.location - 1)); // left
-    } else {
-        return (attemptToMoveInDirection(ghost, ghost.location + 1)); // right
-    }
-}
-
-const attemptYAxisMove = (ghost, yDelta) => {
-    if (yDelta > 0) {
-        return (attemptToMoveInDirection(ghost, ghost.location - 28)); // up
-    } else {
-        return (attemptToMoveInDirection(ghost, ghost.location + 28)); // down
-    }
-}
-
-const moveGhostInDirectionOfPacMan = (ghost) => {
-    const ghostCoords = getCoords(ghost.location);
-    const pacManCoords = getCoords(pacMan.location);
-    const xDelta = ghostCoords.x - pacManCoords.x;
-    const yDelta = ghostCoords.y - pacManCoords.y;
-
-    if (Math.abs(xDelta) > Math.abs(yDelta)) {
-        if (attemptXAxisMove(ghost, xDelta) === false) {
-            if (yDelta === 0) { // facing a wall
-                return (false);
-            } else {
-                return (attemptYAxisMove(ghost, yDelta));
-            }
-        }
-    } else {
-        if (attemptYAxisMove(ghost, yDelta) === false) {
-            if (xDelta === 0) { // facing a wall
-                return (false);
-            } else {
-                return (attemptXAxisMove(ghost, xDelta));
-            }
-        }
-    }
-
-    return (true);
-};
-
-
-const moveGhostAwayFromPacMan = (ghost) => {
-    const directionPossibilities = [];
-    const left = ghost.location - 1;
-    const right = ghost.location + 1;
-    const up = ghost.location - 28;
-    const down = ghost.location + 28;
-
-    if (!checkIfCellIsTypes(up, [cellTypes.WALL])) {
-        directionPossibilities.push(up);
-    }
-    if (!checkIfCellIsTypes(down, [cellTypes.WALL])) {
-        directionPossibilities.push(down);
-    }
-    if (!checkIfCellIsTypes(left, [cellTypes.WALL])) {
-        directionPossibilities.push(left);
-    }
-    if (!checkIfCellIsTypes(right, [cellTypes.WALL])) {
-        directionPossibilities.push(right);
-    }
-
-    if (directionPossibilities.includes(ghost.pathFinder)) {
-        const index = directionPossibilities.indexOf(ghost.pathFinder);
-        directionPossibilities.splice(index, 1);
-    }
-
-    let movementDirection;
-    if (directionPossibilities.length > 1) {
-        const randNum = Math.floor(Math.random() * directionPossibilities.length);
-        movementDirection = directionPossibilities[randNum];
-    } else if (directionPossibilities.length === 1) {
-        movementDirection = directionPossibilities[0];
-    } else {
-        return;
-    }
-
-    moveGhost(ghost, movementDirection);
-};
-
-
-// let bravery = 0;
-
-const ghostMovementHandler = (ghost) => {
-    if (!game.gameRunning) {
-        return;
-    }
-
-    if (game.powerPelletActive) {
-        moveGhostAwayFromPacMan(ghost);
-    } else if (ghost.movementMode === moveModes.PATHFINDING) {
-        moveGhost(ghost, ghost.pathFinder);
-    } else if (ghost.movementMode === moveModes.DIRECT) {
-        if (moveGhostInDirectionOfPacMan(ghost) === false) {
-            ghost.movementMode = moveModes.PATHFINDING;
-            setTimeout(() => {
-                ghost.movementMode = moveModes.DIRECT;
-            }, 5000);
-        }
-    } else {
-        if (ghost.bravery === 20) {
-            ghost.bravery = 0;
-        } else {
-            ghost.bravery++;
-        }
-
-        const locationType = cells[ghost.location].classList[1];
-        if (ghost.bravery >= 10 || locationType === cellTypes.GHOST_LAIR) {
-            moveGhost(ghost, ghost.pathFinder);
-        } else {
-            moveGhostAwayFromPacMan(ghost);
-        }
-    }
-
-    if (ghost.location === pacMan.location) {
-        ghostContact(ghost);
-    }
-    setTimeout(ghostMovementHandler, ghost.speed - game.ghostSpeedIncrease, ghost);
-}
-
-
-
 // ----- PAC-MAN -----
 
 
@@ -376,7 +153,7 @@ const eatGhost = (ghost) => {
     game.ghostSpeedIncrease = -150;
 }
 
-const ghostContact = (ghost) => {
+export const ghostContact = (ghost) => {
     if (game.powerPelletActive) {
         eatGhost(ghost);
     } else {
@@ -539,21 +316,15 @@ const createGhosts = () => {
 }
 
 export const runGame = () => {
-    console.log("run game");
-
     game.gameRunning = true;
 
-    if (game.statusPrevGame !== undefined) {
-        refreshGameField();
-        console.log("not a new game");
-    }
     if (game.statusPrevGame === GAME_OVER) {
-        console.log("game after game-over");
+        refreshGameField();
         game.ghostSpeedIncrease = 0;
         game.score = 0;
         game.numberOfWins = 0;
     } else if (game.statusPrevGame === WIN) {
-        console.log("game after " + game.numberOfWins + " wins");
+        refreshGameField();
         game.ghostSpeedIncrease = 25 * game.numberOfWins;
     }
 
