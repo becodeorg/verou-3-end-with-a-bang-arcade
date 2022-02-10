@@ -25,14 +25,17 @@ const GAME_OVER = false;
 const gameFieldWidth = 28;
 export let gameRunning = false;
 let powerPelletActive = false;
-let pacManLocation; // game field index
-let movementDirection;
-let queuedDirection;
 let score;
 let foodRemaining;
 let ghostSpeedIncrease = 0;
 const startingFoodAmount = gameFieldLayout.filter(x => x == 0).length;
-let pacManSpeed = 150;
+
+const pacMan = {
+    speed: 150,
+    movementDirection: undefined,
+    queuedDirection: undefined,
+    location: undefined, // game field index
+}
 
 const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
@@ -246,7 +249,7 @@ const attemptYAxisMove = (ghost, yDelta) => {
 
 const moveGhostInDirectionOfPacMan = (ghost) => {
     const ghostCoords = getCoords(ghost.location);
-    const pacManCoords = getCoords(pacManLocation);
+    const pacManCoords = getCoords(pacMan.location);
     const xDelta = ghostCoords.x - pacManCoords.x;
     const yDelta = ghostCoords.y - pacManCoords.y;
 
@@ -346,7 +349,7 @@ const ghostMovementHandler = (ghost) => {
         }
     }
 
-    if (ghost.location === pacManLocation) {
+    if (ghost.location === pacMan.location) {
         ghostContact(ghost);
     }
     setTimeout(ghostMovementHandler, ghost.speed - ghostSpeedIncrease, ghost);
@@ -375,9 +378,9 @@ const ghostContact = (ghost) => {
 }
 
 const checkGhostContact = () => {
-    if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
+    if (gameFieldGrid.children[pacMan.location].classList.contains("ghost")) {
         const ghost = ghosts.filter(ghost => {
-            return ghost.location === pacManLocation;
+            return ghost.location === pacMan.location;
         })
         ghostContact(ghost[0]);
     }
@@ -392,7 +395,7 @@ const eatPowerPellet = (location) => {
         ghost.afraidStatus = AFRAID;
     }
     ghostSpeedIncrease = -100;
-    pacManSpeed -= 50;
+    pacMan.speed -= 50;
     setTimeout(() => {
         console.log("power pellet wore off");
         powerPelletActive = false;
@@ -401,7 +404,7 @@ const eatPowerPellet = (location) => {
             gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
         }
         ghostSpeedIncrease += 100;
-        pacManSpeed += 50;
+        pacMan.speed += 50;
     }, 7000);
 }
 
@@ -414,7 +417,7 @@ const eatPellet = (location) => {
 }
 
 const checkFood = () => {
-    const location = gameFieldGrid.children[pacManLocation];
+    const location = gameFieldGrid.children[pacMan.location];
     if (location.classList.contains(PELLET)) {
         eatPellet(location);
     } else if (location.classList.contains(POWER_PELLET)
@@ -425,9 +428,9 @@ const checkFood = () => {
 
 const attemptMove = (requestedLocation) => {
     if (!checkIfCellIsTypes(requestedLocation, [WALL, GHOST_LAIR])) {
-        gameFieldGrid.children[pacManLocation].classList.remove("pac-man", "w", "a", "s", "d");
-        gameFieldGrid.children[requestedLocation].classList.add("pac-man", movementDirection);
-        pacManLocation = requestedLocation;
+        gameFieldGrid.children[pacMan.location].classList.remove("pac-man", "w", "a", "s", "d");
+        gameFieldGrid.children[requestedLocation].classList.add("pac-man", pacMan.movementDirection);
+        pacMan.location = requestedLocation;
 
         return (true);
     } else {
@@ -442,30 +445,30 @@ const pacManMovementHandler = () => {
     }
 
     // check if queued direction has become an option, else continue in current direction
-    if (queuedDirection) {
-        switch (queuedDirection) {
+    if (pacMan.queuedDirection) {
+        switch (pacMan.queuedDirection) {
             case "w": // up
-                if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
-                    movementDirection = "w";
-                    queuedDirection = false;
+                if (!checkIfCellIsTypes(pacMan.location - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    pacMan.movementDirection = "w";
+                    pacMan.queuedDirection = false;
                 }
                 break;
             case "a": // left
-                if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
-                    movementDirection = "a";
-                    queuedDirection = false;
+                if (!checkIfCellIsTypes(pacMan.location - 1, [WALL, GHOST_LAIR])) {
+                    pacMan.movementDirection = "a";
+                    pacMan.queuedDirection = false;
                 }
                 break;
             case "s": // down
-                if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
-                    movementDirection = "s";
-                    queuedDirection = false;
+                if (!checkIfCellIsTypes(pacMan.location + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    pacMan.movementDirection = "s";
+                    pacMan.queuedDirection = false;
                 }
                 break;
             case "d": // right
-                if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
-                    movementDirection = "d";
-                    queuedDirection = false;
+                if (!checkIfCellIsTypes(pacMan.location + 1, [WALL, GHOST_LAIR])) {
+                    pacMan.movementDirection = "d";
+                    pacMan.queuedDirection = false;
                 }
                 break;
 
@@ -474,25 +477,25 @@ const pacManMovementHandler = () => {
         }
     }
 
-    switch (movementDirection) {
+    switch (pacMan.movementDirection) {
         case "w": // up
-            attemptMove(pacManLocation - gameFieldWidth);
+            attemptMove(pacMan.location - gameFieldWidth);
             break;
         case "a": // left
-            if (pacManLocation === 364) {
+            if (pacMan.location === 364) {
                 attemptMove(391)
             } else {
-                attemptMove(pacManLocation - 1);
+                attemptMove(pacMan.location - 1);
             }
             break;
         case "s": // down
-            attemptMove(pacManLocation + gameFieldWidth);
+            attemptMove(pacMan.location + gameFieldWidth);
             break;
         case "d": // right
-            if (pacManLocation === 391) {
+            if (pacMan.location === 391) {
                 attemptMove(364);
             } else {
-                attemptMove(pacManLocation + 1);
+                attemptMove(pacMan.location + 1);
             }
             break;
 
@@ -507,7 +510,7 @@ const pacManMovementHandler = () => {
         endGame(WIN);
     }
 
-    setTimeout(pacManMovementHandler, pacManSpeed);
+    setTimeout(pacManMovementHandler, pacMan.speed);
 };
 
 
@@ -542,12 +545,12 @@ export const runGame = () => {
     winMessageDiv.style.display = "none";
 
     // replace pac-man on game field
-    pacManLocation = 490;
-    gameFieldGrid.children[pacManLocation].classList.add("pac-man")
+    pacMan.location = 490;
+    gameFieldGrid.children[pacMan.location].classList.add("pac-man")
 
     // start pac-man movement
-    movementDirection = "a";
-    queuedDirection = "";
+    pacMan.movementDirection = "a";
+    pacMan.queuedDirection = "";
     setTimeout(() => {
         pacManMovementHandler();
     }, 100);
@@ -561,7 +564,7 @@ export const runGame = () => {
 
     // start pathfinding
     intervalIDs.pathFindingIntervalID = setInterval(() => {
-        pathFinding(pacManLocation);
+        pathFinding(pacMan.location);
     }, 100);
 
     // start ghost movement
@@ -578,37 +581,37 @@ export const handleMovementInput = (pressedKey) => {
     switch (pressedKey) {
         case "ArrowUp":
         case "w": // up
-            if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
-                movementDirection = "w";
+            if (!checkIfCellIsTypes(pacMan.location - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                pacMan.movementDirection = "w";
             } else {
-                queuedDirection = "w";
+                pacMan.queuedDirection = "w";
             }
             break;
 
         case "ArrowLeft":
         case "a": // left
-            if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
-                movementDirection = "a";
+            if (!checkIfCellIsTypes(pacMan.location - 1, [WALL, GHOST_LAIR])) {
+                pacMan.movementDirection = "a";
             } else {
-                queuedDirection = "a";
+                pacMan.queuedDirection = "a";
             }
             break;
 
         case "ArrowDown":
         case "s": // down
-            if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
-                movementDirection = "s";
+            if (!checkIfCellIsTypes(pacMan.location + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                pacMan.movementDirection = "s";
             } else {
-                queuedDirection = "s";
+                pacMan.queuedDirection = "s";
             }
             break;
 
         case "ArrowRight":
         case "d": // right
-            if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
-                movementDirection = "d";
+            if (!checkIfCellIsTypes(pacMan.location + 1, [WALL, GHOST_LAIR])) {
+                pacMan.movementDirection = "d";
             } else {
-                queuedDirection = "d";
+                pacMan.queuedDirection = "d";
             }
             break;
 
