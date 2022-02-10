@@ -425,75 +425,77 @@ const attemptMove = (requestedLocation) => {
 
 
 const pacManMovementHandler = () => {
-    intervalIDs.startPacManMovingID = setInterval(() => {
+    if (!gameRunning) {
+        return;
+    }
 
-        // check if queued direction has become an option, else continue in current direction
-        if (queuedDirection) {
-            switch (queuedDirection) {
-                case "w": // up
-                    if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
-                        movementDirection = "w";
-                        queuedDirection = false;
-                    }
-                    break;
-                case "a": // left
-                    if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
-                        movementDirection = "a";
-                        queuedDirection = false;
-                    }
-                    break;
-                case "s": // down
-                    if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
-                        movementDirection = "s";
-                        queuedDirection = false;
-                    }
-                    break;
-                case "d": // right
-                    if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
-                        movementDirection = "d";
-                        queuedDirection = false;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        switch (movementDirection) {
+    // check if queued direction has become an option, else continue in current direction
+    if (queuedDirection) {
+        switch (queuedDirection) {
             case "w": // up
-                attemptMove(pacManLocation - gameFieldWidth);
+                if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    movementDirection = "w";
+                    queuedDirection = false;
+                }
                 break;
             case "a": // left
-                if (pacManLocation === 364) {
-                    attemptMove(391)
-                } else {
-                    attemptMove(pacManLocation - 1);
+                if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
+                    movementDirection = "a";
+                    queuedDirection = false;
                 }
                 break;
             case "s": // down
-                attemptMove(pacManLocation + gameFieldWidth);
+                if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
+                    movementDirection = "s";
+                    queuedDirection = false;
+                }
                 break;
             case "d": // right
-                if (pacManLocation === 391) {
-                    attemptMove(364);
-                } else {
-                    attemptMove(pacManLocation + 1);
+                if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
+                    movementDirection = "d";
+                    queuedDirection = false;
                 }
                 break;
 
             default:
                 break;
         }
+    }
 
-        checkGhostContact();
-        checkFood();
-        scoreP.textContent = score;
-        if (foodRemaining === 0) {
-            endGame(WIN);
-        }
+    switch (movementDirection) {
+        case "w": // up
+            attemptMove(pacManLocation - gameFieldWidth);
+            break;
+        case "a": // left
+            if (pacManLocation === 364) {
+                attemptMove(391)
+            } else {
+                attemptMove(pacManLocation - 1);
+            }
+            break;
+        case "s": // down
+            attemptMove(pacManLocation + gameFieldWidth);
+            break;
+        case "d": // right
+            if (pacManLocation === 391) {
+                attemptMove(364);
+            } else {
+                attemptMove(pacManLocation + 1);
+            }
+            break;
 
-    }, pacManSpeed);
+        default:
+            break;
+    }
+
+    checkGhostContact();
+    checkFood();
+    scoreP.textContent = score;
+    if (foodRemaining === 0) {
+        endGame(WIN);
+    }
+
+    setTimeout(pacManMovementHandler, pacManSpeed);
 };
 
 
@@ -532,7 +534,9 @@ const runGame = () => {
     // start pac-man movement
     movementDirection = "a";
     queuedDirection = "";
-    pacManMovementHandler();
+    setTimeout(() => {
+        pacManMovementHandler();
+    }, 100);
 
     createGhosts();
 
