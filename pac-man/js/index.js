@@ -30,9 +30,9 @@ let movementDirection;
 let queuedDirection;
 let score;
 let foodRemaining;
-let ghostSpeedReducer = 0;
+let ghostSpeedIncrease = 0;
 const startingFoodAmount = gameFieldLayout.filter(x => x == 0).length;
-const pacManSpeed = 150;
+let pacManSpeed = 150;
 
 const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
@@ -111,7 +111,7 @@ const eatGhost = (ghost) => {
     ghost.location = ghost.startLocation;
     gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
     score += 100;
-    ghostSpeedReducer = -150;
+    ghostSpeedIncrease = -150;
 }
 
 const ghostContact = (ghost) => {
@@ -361,7 +361,7 @@ const ghostMovementHandler = (ghost) => {
     if (ghost.location === pacManLocation) {
         ghostContact(ghost);
     }
-    setTimeout(ghostMovementHandler, ghost.speed - ghostSpeedReducer, ghost);
+    setTimeout(ghostMovementHandler, ghost.speed - ghostSpeedIncrease, ghost);
 }
 
 
@@ -385,7 +385,7 @@ const checkFood = () => {
         location.classList.add(EMPTY);
         score += 10;
         foodRemaining--;
-        ghostSpeedReducer++;
+        ghostSpeedIncrease++;
     } else if (location.classList.contains(POWER_PELLET)) {
         if (powerPelletActive === false) {
             console.log("power pellet active!");
@@ -395,7 +395,8 @@ const checkFood = () => {
             for (const ghost of ghosts) {
                 ghost.afraidStatus = AFRAID;
             }
-            ghostSpeedReducer = -100;
+            ghostSpeedIncrease = -100;
+            pacManSpeed -= 50;
             setTimeout(() => {
                 console.log("power pellet wore off");
                 powerPelletActive = false;
@@ -403,7 +404,8 @@ const checkFood = () => {
                     ghost.afraidStatus = UNAFRAID;
                     gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
                 }
-                ghostSpeedReducer += 100;
+                ghostSpeedIncrease += 100;
+                pacManSpeed += 50;
             }, 7000);
         } else {
             return;
@@ -519,7 +521,7 @@ const runGame = () => {
     refreshGameField();
 
     foodRemaining = startingFoodAmount;
-    ghostSpeedReducer = 0;
+    ghostSpeedIncrease = 0;
 
     score = 0;
 
