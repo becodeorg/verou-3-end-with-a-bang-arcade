@@ -84,7 +84,8 @@ const refreshGameField = () => {
 
 const endGame = (status) => {
     window.removeEventListener("keydown", handleKeyEvent);
-    touchControlDiv.removeEventListener("touchstart", handleTouchEvent);
+    document.removeEventListener("touchstart", handleTouchStart, false);
+    document.removeEventListener("touchmove", handleTouchMove, false);
 
     if (status === WIN) {
         console.log("YOU WIN!");
@@ -104,29 +105,10 @@ const endGame = (status) => {
 
     setTimeout(() => { // so game isn't restarted too quickly
         window.addEventListener("keydown", handleKeyEvent);
-        touchControlDiv.addEventListener("touchstart", handleTouchEvent);
+        document.addEventListener("touchstart", handleTouchStart, false);
+        document.addEventListener("touchmove", handleTouchMove, false);
     }, 1000);
 }
-
-// const eatGhost = (ghost) => {
-//     console.log("ate " + ghost.name);
-
-//     // gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
-//     // ghost.location = ghost.startLocation;
-//     // gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
-
-//     moveGhost(ghost, ghost.startLocation);
-//     score += 100;
-//     ghostSpeedIncrease = -100;
-// }
-
-// const ghostContact = (ghost) => {
-//     if (powerPelletActive) {
-//         eatGhost(ghost);
-//     } else {
-//         endGame(GAME_OVER);
-//     }
-// }
 
 
 const checkIfCellIsTypes = (location, types) => {
@@ -644,40 +626,63 @@ const handleKeyEvent = (event) => {
     }
 }
 
-const handleTouchEvent = (event) => {
-    const quadrant = event.target.className;
+
+
+// SWIPE CONTROLS
+// https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
+
+let xDown = null;
+let yDown = null;
+
+const handleTouchMove = (event) => {
+    if (!xDown || !yDown) {
+        return;
+    }
 
     if (!gameRunning) {
         runGame();
         gameRunning = true;
+    }
+    let xUp = event.touches[0].clientX;
+    let yUp = event.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) { /*most significant*/
+        if (xDiff > 0) {
+            handleMovementInput("a")
+        } else {
+            handleMovementInput("d")
+        }
     } else {
-        switch (quadrant) {
-            case "top":
-                handleMovementInput("w")
-                break;
-
-            case "left":
-                handleMovementInput("a")
-                break;
-
-            case "bottom":
-                handleMovementInput("s")
-                break;
-
-            case "right":
-                handleMovementInput("d")
-                break;
-
-            default:
-                break;
+        if (yDiff > 0) {
+            handleMovementInput("w")
+        } else {
+            handleMovementInput("s")
         }
     }
+    /* reset values */
+    xDown = null;
+    yDown = null;
+};
+
+const getTouches = (event) => {
+    return event.touches ||             // browser API
+        event.originalEvent.touches; // jQuery
 }
+
+const handleTouchStart = (event) => {
+    const firstTouch = getTouches(event)[0];
+    xDown = firstTouch.clientX;
+    yDown = firstTouch.clientY;
+};
 
 
 
 // EVENT LISTENERS
 
-
 window.addEventListener("keydown", handleKeyEvent);
-touchControlDiv.addEventListener("touchstart", handleTouchEvent);
+
+document.addEventListener("touchstart", handleTouchStart);
+document.addEventListener("touchmove", handleTouchMove);

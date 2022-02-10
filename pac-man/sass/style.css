@@ -58,14 +58,14 @@ body {
   left: 35%;
   height: 30%;
   width: 30%;
-  background-color: #b4ab8f;
+  background-color: #817a65;
   border-radius: 50%;
   display: inline-block;
 }
 .game-field .type-1 {
   border: 0.5vw solid #f7f4f2;
   background-color: #b3c0bb;
-  border-radius: 5px;
+  border-radius: 0.5vw;
 }
 .game-field .type-1 > .type-2 {
   background-color: #f7f4f2;
@@ -81,7 +81,7 @@ body {
   left: 10%;
   height: 80%;
   width: 80%;
-  background-color: #b4ab8f;
+  background-color: #817a65;
   border-radius: 50%;
   display: inline-block;
 }
@@ -145,25 +145,6 @@ body {
 }
 .game-field .afraid {
   background-color: #8066df;
-}
-
-@media (hover: none) {
-  .touch-control {
-    width: 125px;
-    height: 125px;
-    overflow: hidden;
-    border: 2px solid #b3c0bb;
-    background-color: #f7f4f2;
-    border-radius: 50%;
-    margin: 20px auto;
-    transform: rotate(45deg);
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
-  }
-  .touch-control div {
-    border: 1px solid #b3c0bb;
-  }
 }
 
 /*# sourceMappingURL=style.css.map */

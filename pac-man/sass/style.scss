@@ -42,7 +42,7 @@ body {
 
 $eggshell: rgb(247, 244, 242);
 $wall: rgb(179, 192, 187);
-$food: rgb(180, 171, 143);
+$food: rgb(129, 122, 101);
 
 .game-field {
     padding: 10px;
@@ -72,7 +72,7 @@ $food: rgb(180, 171, 143);
     .type-1 { // wall
         border: .5vw solid $eggshell;
         background-color: $wall;
-        border-radius: 5px;
+        border-radius: .5vw;
     }
 
     .type-1 > 
@@ -139,26 +139,5 @@ $food: rgb(180, 171, 143);
     
     .afraid {
         background-color: rgb(128, 102, 223);
-    }
-}
-
-@media (hover: none) {
-    .touch-control {
-        width: 125px;
-        height: 125px;
-        overflow: hidden;
-        border: 2px solid $wall;
-        background-color: $eggshell;
-        border-radius: 50%;
-        margin: 20px auto;
-        transform: rotate(45deg);
-    
-        display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        
-        div {
-            border: 1px solid $wall;
-        }
     }
 }
