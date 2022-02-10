@@ -5,6 +5,7 @@ import { handleKeyEvent, handleTouchStart, handleTouchMove } from "./controls.js
 
 
 // GLOBAL VARIABLES
+document.documentElement.style.setProperty("--view-port-height", window.innerHeight + "px");
 
 // cell classes
 export const cellTypes = {
@@ -44,8 +45,9 @@ const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
 const gameOverMessageDiv = document.querySelector(".game-over");
 const winMessageDiv = document.querySelector(".win");
+const gameOverScoreP = document.querySelector(".game-over .score");
+const winScoreP = document.querySelector(".win .score");
 const gameFieldGrid = document.querySelector(".game-field");
-const touchControlDiv = document.querySelector(".touch-control");
 
 
 class Ghost {
@@ -96,9 +98,11 @@ const endGame = (status) => {
     if (status === WIN) {
         console.log("YOU WIN!");
         winMessageDiv.style.display = "block";
+        winScoreP.textContent = "score: " + score;
     } else {
         console.log("GAME OVER!");
         gameOverMessageDiv.style.display = "block";
+        gameOverScoreP.textContent = "score: " + score;
     }
 
     for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
@@ -508,7 +512,6 @@ const pacManMovementHandler = () => {
 
     checkGhostContact();
     checkFood();
-    scoreP.textContent = score;
     if (foodRemaining === 0) {
         endGame(WIN);
     }
