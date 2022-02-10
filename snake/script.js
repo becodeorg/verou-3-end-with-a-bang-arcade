@@ -1,5 +1,8 @@
+import { changeSpeed } from "./modules/speed.js";
+import { drawApple } from "./modules/apple.js";
+
 const snakeBoard = document.getElementById("snakeCanvas");
-const ctx = snakeBoard.getContext("2d");
+export const ctx = snakeBoard.getContext("2d");
 
 class SnakePart {
     constructor(x, y) {
@@ -7,14 +10,25 @@ class SnakePart {
         this.y = y;
     }
 }
-let speed = 7;
+export let speed = 7;
+//modify function https://stackoverflow.com/questions/53723251/javascript-modifing-an-imported-variable-causes-assignment-to-constant-varia
+export const modifySpeed = (value) => {
+    speed = value;
+};
 
-let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
+export let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
 let tileSize = snakeBoard.width / tileCount - 2; //if size of canvas or tileCount changes, this will be new tileSize
 let snakeHeadX = 10;
 let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
+
+/*const apple = new Image();
+apple.src = "./apple.png";
+apple.onload = () => {
+    //wait until image is loaded
+    drawApple(); //draw apple after image is loaded
+};*/
 
 let appleX = Math.floor(Math.random() * tileCount);
 let appleY = Math.floor(Math.random() * tileCount);
@@ -24,7 +38,7 @@ const gameOverSound = new Audio("arcadeGameTone.mp3");
 let xVelocity = 0;
 let yVelocity = 0;
 
-let playerScore = 0;
+export let playerScore = 0;
 let playerHighScore = 0;
 
 const clearCanvas = () => {
@@ -65,7 +79,6 @@ const drawSnake = () => {
 };
 
 const snakeDirection = (event) => {
-    console.log(event);
     //up
     if (event.key === "w" || event.key === "ArrowUp") {
         if (yVelocity == 1) {
@@ -110,16 +123,10 @@ const changeSnakeDirection = () => {
     snakeHeadY = snakeHeadY + yVelocity;
 };
 
-const drawApple = () => {
-    //ctx.fillStyle = "green";
-    //ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
-    const apple = new Image();
-    apple.src = "./apple.png";
-    apple.onload = () => {
-        //wait until image of apple is loaded
-        ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20); //this will draw an apple (img)
-    };
-};
+/*const drawApple = () => {
+    //this will draw an apple (img)
+    ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20);
+};*/
 
 const score = () => {
     const score = document.getElementById("score");
@@ -170,26 +177,6 @@ const gameOver = () => {
     return gameOver;
 };
 
-const changeSpeed = () => {
-    if (playerScore > 5) {
-        speed = 9;
-    }
-    if (playerScore > 10) {
-        speed = 11;
-    }
-    if (playerScore > 15) {
-        speed = 13;
-    }
-    if (playerScore > 20) {
-        speed = 15;
-    }
-    if (playerScore > 25) {
-        speed = 18;
-    }
-    if (playerScore > 30) {
-        speed = 21;
-    }
-};
 const gameLoop = () => {
     changeSnakeDirection();
     let result = gameOver();
@@ -200,7 +187,7 @@ const gameLoop = () => {
     clearCanvas();
 
     checkApplePosition();
-    drawApple();
+    drawApple(appleX, appleY);
     drawSnake();
 
     changeSpeed();
