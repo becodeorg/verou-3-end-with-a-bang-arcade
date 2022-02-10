@@ -1,7 +1,7 @@
 // IMPORTS
 
 import gameFieldLayout from "./gameFieldLayout.js";
-
+import { handleTouchStart, handleTouchMove } from "./controls.js";
 
 // GLOBAL VARIABLES
 
@@ -23,7 +23,7 @@ const WIN = true;
 const GAME_OVER = false;
 
 const gameFieldWidth = 28;
-let gameRunning = false;
+export let gameRunning = false;
 let powerPelletActive = false;
 let pacManLocation; // game field index
 let movementDirection;
@@ -525,7 +525,9 @@ const createGhosts = () => {
     ghosts.push(new Ghost("Clyde", 200, 352, AWAY));
 }
 
-const runGame = () => {
+export const runGame = () => {
+    gameRunning = true;
+
     console.log("run game");
 
     refreshGameField();
@@ -572,7 +574,7 @@ const runGame = () => {
 };
 
 
-const handleMovementInput = (pressedKey) => {
+export const handleMovementInput = (pressedKey) => {
     switch (pressedKey) {
         case "ArrowUp":
         case "w": // up
@@ -620,7 +622,6 @@ const handleKeyEvent = (event) => {
 
     if (!gameRunning) {
         runGame();
-        gameRunning = true;
     } else {
         handleMovementInput(pressedKey);
     }
@@ -628,59 +629,8 @@ const handleKeyEvent = (event) => {
 
 
 
-// SWIPE CONTROLS
-// https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
-
-let xDown = null;
-let yDown = null;
-
-const handleTouchMove = (event) => {
-    if (!xDown || !yDown) {
-        return;
-    }
-
-    if (!gameRunning) {
-        runGame();
-        gameRunning = true;
-    }
-    let xUp = event.touches[0].clientX;
-    let yUp = event.touches[0].clientY;
-
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) { /*most significant*/
-        if (xDiff > 0) {
-            handleMovementInput("a")
-        } else {
-            handleMovementInput("d")
-        }
-    } else {
-        if (yDiff > 0) {
-            handleMovementInput("w")
-        } else {
-            handleMovementInput("s")
-        }
-    }
-    /* reset values */
-    xDown = null;
-    yDown = null;
-};
-
-const getTouches = (event) => {
-    return event.touches ||             // browser API
-        event.originalEvent.touches; // jQuery
-}
-
-const handleTouchStart = (event) => {
-    const firstTouch = getTouches(event)[0];
-    xDown = firstTouch.clientX;
-    yDown = firstTouch.clientY;
-};
-
-
-
 // EVENT LISTENERS
+
 
 window.addEventListener("keydown", handleKeyEvent);
 
