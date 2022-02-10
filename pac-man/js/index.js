@@ -30,6 +30,8 @@ let movementDirection;
 let queuedDirection;
 let score;
 let foodRemaining;
+let ghostSpeedReducer = 0;
+const startingFoodAmount = gameFieldLayout.filter(x => x == 0).length;
 const pacManSpeed = 150;
 
 const scoreP = document.querySelector(".score");
@@ -80,6 +82,8 @@ const refreshGameField = () => {
 };
 
 const endGame = (status) => {
+    window.removeEventListener("keydown", handleKeyEvent);
+
     if (status === WIN) {
         console.log("YOU WIN!");
         winMessageDiv.style.display = "block";
@@ -95,6 +99,10 @@ const endGame = (status) => {
     clearInterval(intervalIDs.startPacManMovingID);
 
     gameRunning = false;
+
+    setTimeout(() => { // so game isn't restarted too quickly
+        window.addEventListener("keydown", handleKeyEvent);
+    }, 1000);
 }
 
 const eatGhost = (ghost) => {
@@ -103,6 +111,7 @@ const eatGhost = (ghost) => {
     ghost.location = ghost.startLocation;
     gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
     score += 100;
+    ghostSpeedReducer = -150;
 }
 
 const ghostContact = (ghost) => {
@@ -352,7 +361,7 @@ const ghostMovementHandler = (ghost) => {
     if (ghost.location === pacManLocation) {
         ghostContact(ghost);
     }
-    setTimeout(ghostMovementHandler, ghost.speed, ghost);
+    setTimeout(ghostMovementHandler, ghost.speed - ghostSpeedReducer, ghost);
 }
 
 
@@ -376,6 +385,7 @@ const checkFood = () => {
         location.classList.add(EMPTY);
         score += 10;
         foodRemaining--;
+        ghostSpeedReducer++;
     } else if (location.classList.contains(POWER_PELLET)) {
         if (powerPelletActive === false) {
             console.log("power pellet active!");
@@ -385,6 +395,7 @@ const checkFood = () => {
             for (const ghost of ghosts) {
                 ghost.afraidStatus = AFRAID;
             }
+            ghostSpeedReducer = -100;
             setTimeout(() => {
                 console.log("power pellet wore off");
                 powerPelletActive = false;
@@ -392,6 +403,7 @@ const checkFood = () => {
                     ghost.afraidStatus = UNAFRAID;
                     gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
                 }
+                ghostSpeedReducer += 100;
             }, 7000);
         } else {
             return;
@@ -504,7 +516,8 @@ const runGame = () => {
 
     refreshGameField();
 
-    foodRemaining = gameFieldLayout.filter(x => x == 0).length;
+    foodRemaining = startingFoodAmount;
+    ghostSpeedReducer = 0;
 
     score = 0;
 
