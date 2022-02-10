@@ -66,6 +66,7 @@ class Ghost {
     }
     pathFinder;
     afraidStatus = UNAFRAID;
+    bravery = 0;
 }
 
 const ghosts = [];
@@ -322,8 +323,7 @@ const moveGhostAwayFromPacMan = (ghost) => {
 };
 
 
-let counter = 0;
-let brave = false;
+// let bravery = 0;
 
 const ghostMovementHandler = (ghost) => {
     if (!game.gameRunning) {
@@ -342,15 +342,14 @@ const ghostMovementHandler = (ghost) => {
             }, 5000);
         }
     } else {
-        if (counter === 10) {
-            counter = 1;
-            brave = !brave;
+        if (ghost.bravery === 20) {
+            ghost.bravery = 0;
         } else {
-            counter++;
+            ghost.bravery++;
         }
 
         const locationType = cells[ghost.location].classList[1];
-        if (brave || locationType === cellTypes.GHOST_LAIR) {
+        if (ghost.bravery >= 10 || locationType === cellTypes.GHOST_LAIR) {
             moveGhost(ghost, ghost.pathFinder);
         } else {
             moveGhostAwayFromPacMan(ghost);
