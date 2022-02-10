@@ -1,7 +1,8 @@
 import { changeSpeed } from "./modules/speed.js";
+import { drawApple } from "./modules/apple.js";
 
 const snakeBoard = document.getElementById("snakeCanvas");
-const ctx = snakeBoard.getContext("2d");
+export const ctx = snakeBoard.getContext("2d");
 
 class SnakePart {
     constructor(x, y) {
@@ -15,19 +16,19 @@ export const modifySpeed = (value) => {
     speed = value;
 };
 
-let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
+export let tileCount = 20; //to get from 1 side of canvas to other side, it takes 20 tiles
 let tileSize = snakeBoard.width / tileCount - 2; //if size of canvas or tileCount changes, this will be new tileSize
 let snakeHeadX = 10;
 let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
 
-const apple = new Image();
+/*const apple = new Image();
 apple.src = "./apple.png";
 apple.onload = () => {
     //wait until image is loaded
     drawApple(); //draw apple after image is loaded
-};
+};*/
 
 let appleX = Math.floor(Math.random() * tileCount);
 let appleY = Math.floor(Math.random() * tileCount);
@@ -122,10 +123,10 @@ const changeSnakeDirection = () => {
     snakeHeadY = snakeHeadY + yVelocity;
 };
 
-const drawApple = () => {
+/*const drawApple = () => {
     //this will draw an apple (img)
     ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20);
-};
+};*/
 
 const score = () => {
     const score = document.getElementById("score");
@@ -186,7 +187,7 @@ const gameLoop = () => {
     clearCanvas();
 
     checkApplePosition();
-    drawApple();
+    drawApple(appleX, appleY);
     drawSnake();
 
     changeSpeed();
