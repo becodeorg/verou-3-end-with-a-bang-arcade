@@ -1,6 +1,63 @@
-import { handleMovementInput, gameRunning, runGame } from "./index.js";
+import { pacMan, cellTypes, gameFieldWidth, checkIfCellIsTypes, gameRunning, runGame } from "./index.js";
 
-// SWIPE CONTROLS
+
+// ----- KEYBOARD CONTROLS -----
+
+const handleMovementInput = (pressedKey) => {
+    switch (pressedKey) {
+        case "ArrowUp":
+        case "w": // up
+            if (!checkIfCellIsTypes(pacMan.location - gameFieldWidth, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+                pacMan.movementDirection = "w";
+            } else {
+                pacMan.queuedDirection = "w";
+            }
+            break;
+
+        case "ArrowLeft":
+        case "a": // left
+            if (!checkIfCellIsTypes(pacMan.location - 1, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+                pacMan.movementDirection = "a";
+            } else {
+                pacMan.queuedDirection = "a";
+            }
+            break;
+
+        case "ArrowDown":
+        case "s": // down
+            if (!checkIfCellIsTypes(pacMan.location + gameFieldWidth, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+                pacMan.movementDirection = "s";
+            } else {
+                pacMan.queuedDirection = "s";
+            }
+            break;
+
+        case "ArrowRight":
+        case "d": // right
+            if (!checkIfCellIsTypes(pacMan.location + 1, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+                pacMan.movementDirection = "d";
+            } else {
+                pacMan.queuedDirection = "d";
+            }
+            break;
+
+        default:
+            break;
+    }
+};
+
+export const handleKeyEvent = (event) => {
+    const pressedKey = event.key;
+
+    if (!gameRunning) {
+        runGame();
+    } else {
+        handleMovementInput(pressedKey);
+    }
+}
+
+
+// ----- KEYBOARD CONTROLS -----
 // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
 
 let xDown = null;
@@ -13,7 +70,6 @@ export const handleTouchMove = (event) => {
 
     if (!gameRunning) {
         runGame();
-        // gameRunning = true;
     }
     let xUp = event.touches[0].clientX;
     let yUp = event.touches[0].clientY;
