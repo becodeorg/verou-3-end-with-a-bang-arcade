@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -8,29 +9,44 @@
     // border: 1px solid gray;
 }
 
+
+:root {
+    --view-port-height: 0; // set in js; fix for hiding url bar on phones
+}
+
 $eggshell: rgb(247, 244, 242);
 $wall: rgb(179, 192, 187);
 $food: rgb(129, 122, 101);
 $blackish: rgb(17, 5, 44);
 
+
 body {
-    // max-width: 500px;
+    height: var(--view-port-height);
     position: relative;
     font-family: 'Open Sans', sans-serif;
     background-color: $eggshell;
     color: $blackish;
     text-align: center;
     margin: 0 auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 h1 {
-    font-weight: 300;
-    margin: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
 }
 
 h2 {
-    margin-bottom: 10px;
+    margin: 20px;
 }
+
+p {
+    margin: 10px;
+}
+
 
 .game-field-container {
     display: flex;
@@ -62,11 +78,11 @@ h2 {
     }
 }
 
-
 .game-field {
+    height: min(100vw, var(--view-port-height));
+    width: min(100vw, var(--view-port-height));
     padding: 10px;
-    height: 100vw;
-    width: 100vw;
+
     display: grid;
     grid-template-rows: repeat(28, 1fr);
     grid-template-columns: repeat(28, 1fr);
@@ -87,9 +103,9 @@ h2 {
         }
     }
     .type-1 { // wall
-        border: .5vw solid $eggshell;
+        border: min(.5vw, .5vh) solid $eggshell;
         background-color: $wall;
-        border-radius: .5vw;
+        border-radius: min(.5vw, .5vh);
     }
 
     .type-1 > 
