@@ -32,8 +32,6 @@ apple.onload = () => {
 
 let appleX = Math.floor(Math.random() * tileCount);
 let appleY = Math.floor(Math.random() * tileCount);
-const gulpSound = new Audio("biteAppleSound.mp3");
-const gameOverSound = new Audio("arcadeGameTone.mp3");
 
 let xVelocity = 0;
 let yVelocity = 0;
@@ -123,11 +121,6 @@ const changeSnakeDirection = () => {
     snakeHeadY = snakeHeadY + yVelocity;
 };
 
-/*const drawApple = () => {
-    //this will draw an apple (img)
-    ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20);
-};*/
-
 const score = () => {
     const score = document.getElementById("score");
     playerScore++;
@@ -141,6 +134,7 @@ const checkApplePosition = () => {
         appleY = Math.floor(Math.random() * tileCount);
         tailLength++; //tail will get longer on collision
         score();
+        const gulpSound = new Audio("sound/biteAppleSound.mp3");
         gulpSound.play();
     }
 };
@@ -172,6 +166,7 @@ const gameOver = () => {
         ctx.fillStyle = "rgb(233, 0, 255)";
         ctx.font = "50px monospace";
         ctx.fillText("Game Over!", snakeBoard.width / 5, snakeBoard.height / 2);
+        const gameOverSound = new Audio("sound/arcadeGameTone.mp3");
         gameOverSound.play();
     }
     return gameOver;
