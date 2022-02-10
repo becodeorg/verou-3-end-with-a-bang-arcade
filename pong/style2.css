@@ -6,36 +6,33 @@
 body{
     display: flex;
     justify-content: center;
-    background-color: rgba(63,94,251,1) ;
-    background: radial-gradient(circle, rgba(252,70,107,1) 0%, rgba(63,94,251,1) 100%);
+    background-color: rgba(247, 244, 242, 0.342) ;
+    
     
     align-items: center;
-    color: rgba(89, 255, 47, 0.836);
+    color: rgba(17, 5, 44, 0.63);
     width: 100vw;
     height: 100vh;
 }
 #theField{
-    background-color: rgba(63,94,251,1);
+    background-color: rgb(255, 255, 255);
     /* background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%); */
     height: 60VH;
     width: 60vw;
-    border: 0.1px solid  red ;
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
-    animation: gradient 1.21s  infinite; 
-}
-@keyframes gradient {
-    0% { border-color:  #f8f8f8}
-    50% { border-color: #f792b9}
-    100% { border-color: #07bdff}
+    border-radius: 1%;
+    border: 0.9px solid  rgba(17, 5, 44, 0.63) ;
+    /* box-shadow: 0px 0px 41px 20px rgba(17, 5, 44, 0.63);  */
 }
 
+
+
 #ball{
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     border-radius: 50px;
-    background-color: rgb(255, 255, 255);
-    
-    box-shadow: 0px 0px 40px 25px rgba(255,0,0,0.54); 
+    background-color: rgba(17, 5, 44, 0.63);
+    box-shadow: 0px 0px 41px 8px rgba(17, 5, 44, 0.349); 
+
 	
     position: fixed;
     top: calc(50% - 7.5px);
@@ -49,8 +46,8 @@ body{
     height: 100px;
     width: 1px;
     margin-left: 0.5%;
-    background-color: rgb(255, 255, 255, 0.699);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
+    background-color: rgba(0, 0, 0, 0.699);
+    /* box-shadow: 0px 0px 41px 20px rgba(7, 7, 7, 0.56); */
     position: fixed;
     top: calc(50% - 25px);
     
@@ -66,19 +63,16 @@ body{
 #paddleTwo{
     height: 100px;
     width: 1px;
-    background-color: rgba(255, 255, 255, 0.699);
-    
+    background-color: rgba(17, 5, 44, 0.63);
     position: fixed;
     top: calc(50% - 25px);
     left: calc(100% - 20vw - 10px);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56)
-    
-    
+    /* box-shadow: 0px 0px 41px 20px rgba(0, 0, 0, 0.56) */
 }
 
 #the-net{
-    background-color: rgba(46,205,205,0.56);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
+    background-color: rgba(28, 11, 66, 0.459);
+    /* box-shadow: 0px 0px 41px 20px rgba(17, 5, 44, 0.63); */
     height: calc(60% );
     width: 0.1%;
     position: fixed;
@@ -86,26 +80,31 @@ body{
 }
 
 #the-score{
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+        font-weight: 500;
     position: fixed;
     left: calc(25vw + 8%);
     top: calc(25vh - 20px );
     
 }
 #the-score2{
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+        font-weight: 500;
     position: fixed;
     top: calc(25vh - 20px);
     left: calc(50vw + 17%);
 }
 
 #info{
-    font-family: 'Work Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 500;
     position: fixed;
     top: 8%;
     left: calc(50vw - 11% );
     
+}
+
+#commands{
+    position: fixed;
+    top: 90%;
 }
