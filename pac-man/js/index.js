@@ -39,6 +39,7 @@ const defaultMessageDiv = document.querySelector(".default");
 const gameOverMessageDiv = document.querySelector(".game-over");
 const winMessageDiv = document.querySelector(".win");
 const gameFieldGrid = document.querySelector(".game-field");
+const touchControlDiv = document.querySelector(".touch-control");
 
 
 class Ghost {
@@ -83,6 +84,7 @@ const refreshGameField = () => {
 
 const endGame = (status) => {
     window.removeEventListener("keydown", handleKeyEvent);
+    touchControlDiv.removeEventListener("touchstart", handleTouchEvent);
 
     if (status === WIN) {
         console.log("YOU WIN!");
@@ -102,6 +104,7 @@ const endGame = (status) => {
 
     setTimeout(() => { // so game isn't restarted too quickly
         window.addEventListener("keydown", handleKeyEvent);
+        touchControlDiv.addEventListener("touchstart", handleTouchEvent);
     }, 1000);
 }
 
@@ -677,5 +680,4 @@ const handleTouchEvent = (event) => {
 
 
 window.addEventListener("keydown", handleKeyEvent);
-const touchControlDiv = document.querySelector(".touch-control");
 touchControlDiv.addEventListener("touchstart", handleTouchEvent);
