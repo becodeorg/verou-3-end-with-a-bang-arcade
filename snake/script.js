@@ -16,8 +16,8 @@ let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
 
-let appleX = 5;
-let appleY = 5;
+let appleX = Math.floor(Math.random() * tileCount);
+let appleY = Math.floor(Math.random() * tileCount);
 const gulpSound = new Audio("biteAppleSound.mp3");
 const gameOverSound = new Audio("arcadeGameTone.mp3");
 
@@ -25,8 +25,7 @@ let xVelocity = 0;
 let yVelocity = 0;
 
 let playerScore = 0;
-
-const img = new Image();
+let playerHighScore = 0;
 
 const clearCanvas = () => {
     //select the colour to fill the drawing
@@ -112,13 +111,20 @@ const changeSnakeDirection = () => {
 };
 
 const drawApple = () => {
-    ctx.fillStyle = "green";
-    ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+    //ctx.fillStyle = "green";
+    //ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+    const apple = new Image();
+    apple.src = "./apple.png";
+    apple.onload = () => {
+        //wait until image of apple is loaded
+        ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20); //this will draw an apple (img)
+    };
+};
 
-    /*img.src = "./apple.png";
-    img.onload = () => {
-        ctx.drawImage(img, 5 * tileCount, 5 * tileCount, 20, 20);
-    };*/
+const score = () => {
+    const score = document.getElementById("score");
+    playerScore++;
+    score.innerHTML = playerScore;
 };
 
 const checkApplePosition = () => {
@@ -127,9 +133,7 @@ const checkApplePosition = () => {
         appleX = Math.floor(Math.random() * tileCount); //apple will move to random location inside our canvas
         appleY = Math.floor(Math.random() * tileCount);
         tailLength++; //tail will get longer on collision
-        const score = document.getElementById("score");
-        playerScore++;
-        score.innerHTML = playerScore;
+        score();
         gulpSound.play();
     }
 };
