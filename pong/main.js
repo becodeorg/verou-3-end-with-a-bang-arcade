@@ -15,6 +15,8 @@ const ballStartingCoor = ballStarting.getBoundingClientRect(); // Keep the ball 
 let baballCoor = ballStartingCoor;
 let a = 0;
 let b = 0;
+const hello = document.getElementById('hello')
+
 // need a paddle class to organise the gen position of them
 // const paddleSCommon = document
 //   .querySelector(".paddles")
@@ -37,10 +39,10 @@ document.addEventListener("keydown", (event) => {
     info.style.top= 9 + "%"
     info.textContent = "Game Started";
     requestAnimationFrame(() => {
-      directionX = Math.floor(Math.random() * 6) + 3;
-      directionY = Math.floor(Math.random() * 6) + 3;
-      directionXd = Math.floor(Math.random() * 6) + 3;
-      directionYd = Math.floor(Math.random() * 6) + 3;
+      directionX = Math.floor(Math.random() * 5) + 3;
+      directionY = Math.floor(Math.random() * 5) + 3;
+      directionXd = Math.floor(Math.random() * 5) + 3;
+      directionYd = Math.floor(Math.random() * 5) + 3;
         letsMoveIt(directionX, directionY, directionXd, directionYd);
     });
   }
@@ -49,7 +51,7 @@ document.addEventListener("keydown", (event) => {
       paddleOne.style.top =
         Math.max(
           fieldCoor.top,
-          paddleOneCoor.top - window.innerHeight * 0.1
+          paddleOneCoor.top - window.innerHeight * 0.11
         ) + "px";
         paddleOneCoor = paddleOne.getBoundingClientRect()
     }
@@ -58,7 +60,7 @@ document.addEventListener("keydown", (event) => {
           paddleOne.style.top =
           Math.min(
             fieldCoor.bottom - paddleOne.getBoundingClientRect().height,
-            paddleOneCoor.top + window.innerHeight * 0.1
+            paddleOneCoor.top + window.innerHeight * 0.11
           ) + "px";
           paddleOneCoor = paddleOne.getBoundingClientRect()
           
@@ -68,7 +70,7 @@ document.addEventListener("keydown", (event) => {
       paddleTwo.style.top = 
       Math.max(
         fieldCoor.top,
-        paddleTwoCoor.top - window.innerHeight * 0.1
+        paddleTwoCoor.top - window.innerHeight * 0.11
       ) + "px";
       paddleTwoCoor = paddleTwo.getBoundingClientRect();
     }    
@@ -77,7 +79,7 @@ document.addEventListener("keydown", (event) => {
      paddleTwo.style.top =
      Math.min(
        fieldCoor.bottom - paddleTwo.getBoundingClientRect().height,
-       paddleTwoCoor.top + window.innerHeight * 0.1 
+       paddleTwoCoor.top + window.innerHeight * 0.11
      ) + "px"
      paddleTwoCoor = paddleTwo.getBoundingClientRect()
     }
@@ -103,6 +105,9 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                         directionXd = 1;
                         directionX = Math.floor(Math.random() * 6) + 3;
                         directionY = Math.floor(Math.random() * 6) + 3;  // if those two are uncommented, the speed and direction change after touching a wall ^^
+                        console.log(directionXd);
+                        console.log(directionYd);
+
                         }
 
                     if (baballCoor.right >= paddleTwoCoor.left // same for paddle right
@@ -110,7 +115,9 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                       && baballCoor.bottom <= paddleTwoCoor.bottom){
                         directionXd = 0;
                         directionX = Math.floor(Math.random() * 6) + 3 ;
+                        console.log(directionXd);
                         directionY = Math.floor(Math.random() * 6) + 3 ;
+                        console.log(directionYd)
                       }    
 
                       // score implement + restart
