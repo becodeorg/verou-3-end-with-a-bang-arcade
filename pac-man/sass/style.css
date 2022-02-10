@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,6 +7,20 @@
 
 body {
   position: relative;
+  font-family: "Open Sans", sans-serif;
+  background-color: #f7f4f2;
+  color: #11052c;
+  text-align: center;
+  margin: 0 auto;
+}
+
+h1 {
+  font-weight: 300;
+  margin: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
 }
 
 .game-field-container {
@@ -20,22 +35,20 @@ body {
   z-index: 1;
   width: 100%;
   padding: 30px;
-  text-align: center;
   text-transform: uppercase;
+  border-top: 1px solid #11052c;
+  border-bottom: 1px solid #11052c;
 }
-
-.default {
+.message.default {
   display: block;
-  background-color: #fff;
+  background-color: #f7f4f2;
 }
-
-.game-over {
-  background-color: black;
-  color: white;
+.message.game-over {
+  background-color: #11052c;
+  color: #f7f4f2;
 }
-
-.win {
-  background-color: #fff;
+.message.win {
+  background-color: #f7f4f2;
 }
 
 .game-field {
@@ -45,10 +58,8 @@ body {
   display: grid;
   grid-template-rows: repeat(28, 1fr);
   grid-template-columns: repeat(28, 1fr);
-  background-color: #f7f4f2;
 }
 .game-field .type-0 {
-  background-color: #f7f4f2;
   position: relative;
 }
 .game-field .type-0::before {
@@ -58,14 +69,14 @@ body {
   left: 35%;
   height: 30%;
   width: 30%;
-  background-color: #b4ab8f;
+  background-color: #817a65;
   border-radius: 50%;
   display: inline-block;
 }
 .game-field .type-1 {
   border: 0.5vw solid #f7f4f2;
   background-color: #b3c0bb;
-  border-radius: 5px;
+  border-radius: 0.5vw;
 }
 .game-field .type-1 > .type-2 {
   background-color: #f7f4f2;
@@ -81,7 +92,7 @@ body {
   left: 10%;
   height: 80%;
   width: 80%;
-  background-color: #b4ab8f;
+  background-color: #817a65;
   border-radius: 50%;
   display: inline-block;
 }
@@ -145,25 +156,6 @@ body {
 }
 .game-field .afraid {
   background-color: #8066df;
-}
-
-@media (hover: none) {
-  .touch-control {
-    width: 125px;
-    height: 125px;
-    overflow: hidden;
-    border: 2px solid #b3c0bb;
-    background-color: #f7f4f2;
-    border-radius: 50%;
-    margin: 20px auto;
-    transform: rotate(45deg);
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
-  }
-  .touch-control div {
-    border: 1px solid #b3c0bb;
-  }
 }
 
 /*# sourceMappingURL=style.css.map */
