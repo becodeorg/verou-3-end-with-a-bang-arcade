@@ -105,22 +105,25 @@ const endGame = (status) => {
     }, 1000);
 }
 
-const eatGhost = (ghost) => {
-    console.log("ate " + ghost.name);
-    gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
-    ghost.location = ghost.startLocation;
-    gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
-    score += 100;
-    ghostSpeedIncrease = -150;
-}
+// const eatGhost = (ghost) => {
+//     console.log("ate " + ghost.name);
 
-const ghostContact = (ghost) => {
-    if (powerPelletActive) {
-        eatGhost(ghost);
-    } else {
-        endGame(GAME_OVER);
-    }
-}
+//     // gameFieldGrid.children[ghost.location].classList.remove("ghost", ghost.name, ghost.afraidStatus);
+//     // ghost.location = ghost.startLocation;
+//     // gameFieldGrid.children[ghost.location].classList.add("ghost", ghost.name, ghost.afraidStatus);
+
+//     moveGhost(ghost, ghost.startLocation);
+//     score += 100;
+//     ghostSpeedIncrease = -100;
+// }
+
+// const ghostContact = (ghost) => {
+//     if (powerPelletActive) {
+//         eatGhost(ghost);
+//     } else {
+//         endGame(GAME_OVER);
+//     }
+// }
 
 
 const checkIfCellIsTypes = (location, types) => {
@@ -369,6 +372,23 @@ const ghostMovementHandler = (ghost) => {
 // ----- PAC-MAN -----
 
 
+const eatGhost = (ghost) => {
+    console.log("ate " + ghost.name);
+
+    moveGhost(ghost, ghost.startLocation);
+
+    score += 100;
+    ghostSpeedIncrease = -100;
+}
+
+const ghostContact = (ghost) => {
+    if (powerPelletActive) {
+        eatGhost(ghost);
+    } else {
+        endGame(GAME_OVER);
+    }
+}
+
 const checkGhostContact = () => {
     if (gameFieldGrid.children[pacManLocation].classList.contains("ghost")) {
         const ghost = ghosts.filter(ghost => {
@@ -378,38 +398,43 @@ const checkGhostContact = () => {
     }
 }
 
+const eatPowerPellet = (location) => {
+    console.log("power pellet active!");
+    location.classList.remove(POWER_PELLET);
+    location.classList.add(EMPTY);
+    powerPelletActive = true;
+    for (const ghost of ghosts) {
+        ghost.afraidStatus = AFRAID;
+    }
+    ghostSpeedIncrease = -100;
+    pacManSpeed -= 50;
+    setTimeout(() => {
+        console.log("power pellet wore off");
+        powerPelletActive = false;
+        for (const ghost of ghosts) {
+            ghost.afraidStatus = UNAFRAID;
+            gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
+        }
+        ghostSpeedIncrease += 100;
+        pacManSpeed += 50;
+    }, 7000);
+}
+
+const eatPellet = (location) => {
+    location.classList.remove(PELLET);
+    location.classList.add(EMPTY);
+    score += 10;
+    foodRemaining--;
+    ghostSpeedIncrease++;
+}
+
 const checkFood = () => {
     const location = gameFieldGrid.children[pacManLocation];
     if (location.classList.contains(PELLET)) {
-        location.classList.remove(PELLET);
-        location.classList.add(EMPTY);
-        score += 10;
-        foodRemaining--;
-        ghostSpeedIncrease++;
-    } else if (location.classList.contains(POWER_PELLET)) {
-        if (powerPelletActive === false) {
-            console.log("power pellet active!");
-            location.classList.remove(POWER_PELLET);
-            location.classList.add(EMPTY);
-            powerPelletActive = true;
-            for (const ghost of ghosts) {
-                ghost.afraidStatus = AFRAID;
-            }
-            ghostSpeedIncrease = -100;
-            pacManSpeed -= 50;
-            setTimeout(() => {
-                console.log("power pellet wore off");
-                powerPelletActive = false;
-                for (const ghost of ghosts) {
-                    ghost.afraidStatus = UNAFRAID;
-                    gameFieldGrid.children[ghost.location].classList.remove(AFRAID);
-                }
-                ghostSpeedIncrease += 100;
-                pacManSpeed += 50;
-            }, 7000);
-        } else {
-            return;
-        }
+        eatPellet(location);
+    } else if (location.classList.contains(POWER_PELLET)
+        && powerPelletActive === false) {
+        eatPowerPellet(location);
     }
 };
 
@@ -564,35 +589,39 @@ const runGame = () => {
 
 const handleMovementInput = (pressedKey) => {
     switch (pressedKey) {
+        case "ArrowUp":
         case "w": // up
             if (!checkIfCellIsTypes(pacManLocation - gameFieldWidth, [WALL, GHOST_LAIR])) {
-                movementDirection = pressedKey;
+                movementDirection = "w";
             } else {
-                queuedDirection = pressedKey;
+                queuedDirection = "w";
             }
             break;
 
+        case "ArrowLeft":
         case "a": // left
             if (!checkIfCellIsTypes(pacManLocation - 1, [WALL, GHOST_LAIR])) {
-                movementDirection = pressedKey;
+                movementDirection = "a";
             } else {
-                queuedDirection = pressedKey;
+                queuedDirection = "a";
             }
             break;
 
+        case "ArrowDown":
         case "s": // down
             if (!checkIfCellIsTypes(pacManLocation + gameFieldWidth, [WALL, GHOST_LAIR])) {
-                movementDirection = pressedKey;
+                movementDirection = "s";
             } else {
-                queuedDirection = pressedKey;
+                queuedDirection = "s";
             }
             break;
 
+        case "ArrowRight":
         case "d": // right
             if (!checkIfCellIsTypes(pacManLocation + 1, [WALL, GHOST_LAIR])) {
-                movementDirection = pressedKey;
+                movementDirection = "d";
             } else {
-                queuedDirection = pressedKey;
+                queuedDirection = "d";
             }
             break;
 
