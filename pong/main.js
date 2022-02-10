@@ -1,5 +1,6 @@
 const paddleOne = document.getElementById("paddleOne");
 const paddleTwo = document.getElementById("paddleTwo");
+const thetwoos = document.querySelector(".paddles")
 const theField = document.getElementById("theField");
 let gameStatus = "startingScreen";
 const baball = document.getElementById("ball");
@@ -23,6 +24,7 @@ let directionX = Math.floor(Math.random() * 4) + 3;
 let directionY = Math.floor(Math.random() * 4) + 3;
 let directionXd = Math.floor(Math.random() * 2);
 let directionYd = Math.floor(Math.random() * 2);
+console.log(paddleOneCoor);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -31,12 +33,14 @@ document.addEventListener("keydown", (event) => {
   }
 
   if ((gameStatus === "play") && (event.key==="Enter")) {
+    info.style.left= 40 + "vw"
+    info.style.top= 9 + "%"
     info.textContent = "Game Started";
     requestAnimationFrame(() => {
-      directionX = Math.floor(Math.random() * 4) + 3;
-      directionY = Math.floor(Math.random() * 4) + 3;
-      directionXd = Math.floor(Math.random() * 4) + 3;
-      directionYd = Math.floor(Math.random() * 4) + 3;
+      directionX = Math.floor(Math.random() * 6) + 3;
+      directionY = Math.floor(Math.random() * 6) + 3;
+      directionXd = Math.floor(Math.random() * 6) + 3;
+      directionYd = Math.floor(Math.random() * 6) + 3;
         letsMoveIt(directionX, directionY, directionXd, directionYd);
     });
   }
@@ -44,18 +48,17 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "q") {
       paddleOne.style.top =
         Math.max(
-          theField.getBoundingClientRect().top,
-          paddleOne.getBoundingClientRect().top - 23.9
+          fieldCoor.top,
+          paddleOneCoor.top - window.innerHeight * 0.1
         ) + "px";
         paddleOneCoor = paddleOne.getBoundingClientRect()
     }
     if (event.key === "w") 
         {
-          
           paddleOne.style.top =
           Math.min(
-            theField.getBoundingClientRect().bottom - paddleOne.getBoundingClientRect().height  ,
-            paddleOne.getBoundingClientRect().top + 23.9 
+            fieldCoor.bottom - paddleOne.getBoundingClientRect().height,
+            paddleOneCoor.top + window.innerHeight * 0.1
           ) + "px";
           paddleOneCoor = paddleOne.getBoundingClientRect()
           
@@ -64,8 +67,8 @@ document.addEventListener("keydown", (event) => {
     if(event.key == "ArrowUp"){
       paddleTwo.style.top = 
       Math.max(
-        theField.getBoundingClientRect().top,
-        paddleTwo.getBoundingClientRect().top -23.9
+        fieldCoor.top,
+        paddleTwoCoor.top - window.innerHeight * 0.1
       ) + "px";
       paddleTwoCoor = paddleTwo.getBoundingClientRect();
     }    
@@ -96,23 +99,23 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                       &&
                       baballCoor.top >= paddleOneCoor.top
                       &&
-                      baballCoor.bottom <= paddleTwoCoor.bottom){
+                      baballCoor.bottom <= paddleOneCoor.bottom){
                         directionXd = 1;
-                        directionX = Math.floor(Math.random() * 4) + 3;
-                        directionY = Math.floor(Math.random() * 4) + 3;  // if those two are uncommented, the speed and direction change after touching a wall ^^
+                        directionX = Math.floor(Math.random() * 6) + 3;
+                        directionY = Math.floor(Math.random() * 6) + 3;  // if those two are uncommented, the speed and direction change after touching a wall ^^
                         }
 
                     if (baballCoor.right >= paddleTwoCoor.left // same for paddle right
                       && baballCoor.top >= paddleTwoCoor.top
                       && baballCoor.bottom <= paddleTwoCoor.bottom){
                         directionXd = 0;
-                        directionX = Math.floor(Math.random() * 4) + 3 ;
-                        directionY = Math.floor(Math.random() * 4) + 3 ;
+                        directionX = Math.floor(Math.random() * 6) + 3 ;
+                        directionY = Math.floor(Math.random() * 6) + 3 ;
                       }    
 
                       // score implement + restart
-                      if ( baballCoor.left <= fieldCoor.left
-                         || baballCoor.right >= fieldCoor.right
+                      if ( (baballCoor.left <= fieldCoor.left) // fieldcoor.left previously but changed to paddleoneCoor.left
+                         || (baballCoor.right >= fieldCoor.right)
                         ){
                           
                           
@@ -123,17 +126,21 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
                           else {
                             a = a + 1
                             score1.textContent = a ;
+                            console.log(baballCoor);
                           }
                           gameStatus = "startingScreen'"
-                          baballCoor = ballStartingCoor; // here pressing enter bug ! 
-                          info.textContent = " ENTER = POOOONG "
+                          baballCoor = ballStartingCoor; 
+                          info.style.left = 34 + "%"
+                          info.style.top = 8 + "%"
+                          info.textContent = " To play again press Enter twice "
+                          
+                          //TODO: Need to add a thetwoos position to bring them back to starting point 
                           return;
                         }
                         //Let's make it move for fsk
                         baball.style.top = baballCoor.top + directionY * ( directionYd == 0 ? -1 : 1) + "px"; // ternary conditions for direction
                         baball.style.left =  baballCoor.left + directionX * ( directionXd == 0 ? -1 : 1) + "px";
-                        console.log(baball.getBoundingClientRect()) 
-                        console.log(theField.getBoundingClientRect())
+                        
                         
                         baballCoor = baball.getBoundingClientRect()
                         requestAnimationFrame(() =>{
