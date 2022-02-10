@@ -1,4 +1,4 @@
-import { pacMan, cellTypes, gameFieldWidth, checkIfCellIsTypes, gameRunning, runGame } from "./index.js";
+import { game, pacMan, cellTypes, checkIfCellIsTypes, runGame } from "./index.js";
 
 
 // ----- KEYBOARD CONTROLS -----
@@ -7,7 +7,7 @@ const handleMovementInput = (pressedKey) => {
     switch (pressedKey) {
         case "ArrowUp":
         case "w": // up
-            if (!checkIfCellIsTypes(pacMan.location - gameFieldWidth, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+            if (!checkIfCellIsTypes(pacMan.location - game.GAME_FIELD_WIDTH, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
                 pacMan.movementDirection = "w";
             } else {
                 pacMan.queuedDirection = "w";
@@ -25,7 +25,7 @@ const handleMovementInput = (pressedKey) => {
 
         case "ArrowDown":
         case "s": // down
-            if (!checkIfCellIsTypes(pacMan.location + gameFieldWidth, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
+            if (!checkIfCellIsTypes(pacMan.location + game.GAME_FIELD_WIDTH, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
                 pacMan.movementDirection = "s";
             } else {
                 pacMan.queuedDirection = "s";
@@ -49,7 +49,7 @@ const handleMovementInput = (pressedKey) => {
 export const handleKeyEvent = (event) => {
     const pressedKey = event.key;
 
-    if (!gameRunning) {
+    if (!game.gameRunning) {
         runGame();
     } else {
         handleMovementInput(pressedKey);
@@ -68,7 +68,7 @@ export const handleTouchMove = (event) => {
         return;
     }
 
-    if (!gameRunning) {
+    if (!game.gameRunning) {
         runGame();
     }
     let xUp = event.touches[0].clientX;
