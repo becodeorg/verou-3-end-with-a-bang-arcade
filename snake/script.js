@@ -16,6 +16,13 @@ let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
 
+const apple = new Image();
+apple.src = "./apple.png";
+apple.onload = () => {
+    //wait until image is loaded
+    drawApple(); //draw apple after image is loaded
+};
+
 let appleX = Math.floor(Math.random() * tileCount);
 let appleY = Math.floor(Math.random() * tileCount);
 const gulpSound = new Audio("biteAppleSound.mp3");
@@ -111,14 +118,8 @@ const changeSnakeDirection = () => {
 };
 
 const drawApple = () => {
-    //ctx.fillStyle = "green";
-    //ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
-    const apple = new Image();
-    apple.src = "./apple.png";
-    apple.onload = () => {
-        //wait until image of apple is loaded
-        ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20); //this will draw an apple (img)
-    };
+    //this will draw an apple (img)
+    ctx.drawImage(apple, appleX * tileCount, appleY * tileCount, 20, 20);
 };
 
 const score = () => {
