@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,8 +8,28 @@
     // border: 1px solid gray;
 }
 
+$eggshell: rgb(247, 244, 242);
+$wall: rgb(179, 192, 187);
+$food: rgb(129, 122, 101);
+$blackish: rgb(17, 5, 44);
+
 body {
+    // max-width: 500px;
     position: relative;
+    font-family: 'Open Sans', sans-serif;
+    background-color: $eggshell;
+    color: $blackish;
+    text-align: center;
+    margin: 0 auto;
+}
+
+h1 {
+    font-weight: 300;
+    margin: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
 }
 
 .game-field-container {
@@ -22,27 +44,24 @@ body {
     z-index: 1;
     width: 100%;
     padding: 30px;
-    text-align: center;
+
     text-transform: uppercase;
+    border-top: 1px solid $blackish;
+    border-bottom: 1px solid $blackish;
+
+    &.default {
+        display: block;
+        background-color: $eggshell;
+    }
+    &.game-over {
+        background-color: $blackish;
+        color: $eggshell;
+    }
+    &.win {
+        background-color: $eggshell;
+    }
 }
 
-.default {
-    display: block;
-    background-color: #fff;
-}
-
-.game-over {
-    background-color: black;
-    color: white;
-}
-
-.win {
-    background-color: #fff;
-}
-
-$eggshell: rgb(247, 244, 242);
-$wall: rgb(179, 192, 187);
-$food: rgb(180, 171, 143);
 
 .game-field {
     padding: 10px;
@@ -51,10 +70,8 @@ $food: rgb(180, 171, 143);
     display: grid;
     grid-template-rows: repeat(28, 1fr);
     grid-template-columns: repeat(28, 1fr);
-    background-color: $eggshell;
 
     .type-0 { // pellet
-        background-color: $eggshell;
         position: relative;
 
         &::before {
@@ -72,7 +89,7 @@ $food: rgb(180, 171, 143);
     .type-1 { // wall
         border: .5vw solid $eggshell;
         background-color: $wall;
-        border-radius: 5px;
+        border-radius: .5vw;
     }
 
     .type-1 > 
@@ -139,26 +156,5 @@ $food: rgb(180, 171, 143);
     
     .afraid {
         background-color: rgb(128, 102, 223);
-    }
-}
-
-@media (hover: none) {
-    .touch-control {
-        width: 125px;
-        height: 125px;
-        overflow: hidden;
-        border: 2px solid $wall;
-        background-color: $eggshell;
-        border-radius: 50%;
-        margin: 20px auto;
-        transform: rotate(45deg);
-    
-        display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        
-        div {
-            border: 1px solid $wall;
-        }
     }
 }
