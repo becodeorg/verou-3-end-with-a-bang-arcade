@@ -25,6 +25,7 @@ let xVelocity = 0;
 let yVelocity = 0;
 
 let playerScore = 0;
+let playerHighScore = 0;
 
 const clearCanvas = () => {
     //select the colour to fill the drawing
@@ -120,15 +121,19 @@ const drawApple = () => {
     };
 };
 
+const score = () => {
+    const score = document.getElementById("score");
+    playerScore++;
+    score.innerHTML = playerScore;
+};
+
 const checkApplePosition = () => {
     if (appleX === snakeHeadX && appleY === snakeHeadY) {
         // if snakehead and apple collide
         appleX = Math.floor(Math.random() * tileCount); //apple will move to random location inside our canvas
         appleY = Math.floor(Math.random() * tileCount);
         tailLength++; //tail will get longer on collision
-        const score = document.getElementById("score");
-        playerScore++;
-        score.innerHTML = playerScore;
+        score();
         gulpSound.play();
     }
 };

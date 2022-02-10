@@ -6,12 +6,13 @@
 body{
     display: flex;
     justify-content: center;
+    background-color:rgb(216, 163, 163) ;
     align-items: center;
     width: 100vw;
     height: 100vh;
 }
 #theField{
-    background-color: rgba(43, 43, 43, 0.788);
+    background-color: rgba(252, 252, 252, 0.788);
     ;
     height: 60VH;
     width: 60vw;
@@ -22,7 +23,7 @@ body{
     width: 15px;
     height: 15px;
     border-radius: 50px;
-    background-color: rgb(245, 245, 149);
+    background-color: rgb(0, 0, 0);
     position: fixed;
     top: calc(50% - 7.5px);
     left: calc(50% - 7.5px);
@@ -31,17 +32,20 @@ body{
 #paddleOne{
     height: 100px;
     width: 10px;
-    background-color: rgb(245, 245, 149);
+    background-color: rgb(5, 5, 5);
     position: fixed;
     top: calc(50% - 25px);
+    /* animation: bebe 1s linear 0s 1 normal forwards; //TODO: Will try first with js then come back to CSS solution if needed*/
     
 
 }
 
+
+
 #paddleTwo{
     height: 100px;
     width: 10px;
-    background-color: rgb(245, 245, 149);
+    background-color: rgb(3, 3, 3);
     position: fixed;
     top: calc(50% - 25px);
     left: calc(100% - 20vw - 10px);
@@ -50,7 +54,11 @@ body{
 }
 
 #the-net{
-    background-color: yellow;
+    background-color: rgba(2, 2, 2, 0.322);
+    height: calc(60% );
+    width: 0.1%;
+    position: fixed;
+    left: 50vw  ;
 }
 
 #the-score{
