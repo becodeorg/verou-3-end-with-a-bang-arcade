@@ -26,13 +26,15 @@ const UNAFRAID = "unafraid";
 const WIN = true;
 const GAME_OVER = false;
 
+let statusPrevGame = undefined; // undefined: new game, false: game-over, true; win
+let numberOfWins = 0;
 export const gameFieldWidth = 28;
 export let gameRunning = false;
 let powerPelletActive = false;
-let score;
-let foodRemaining;
+let score = 0;
 let ghostSpeedIncrease = 0;
 const startingFoodAmount = gameFieldLayout.filter(x => x == 0).length;
+let foodRemaining = startingFoodAmount;
 
 export const pacMan = {
     speed: 150,
@@ -41,7 +43,6 @@ export const pacMan = {
     location: undefined, // game field index
 }
 
-const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
 const gameOverMessageDiv = document.querySelector(".game-over");
 const winMessageDiv = document.querySelector(".win");
@@ -98,11 +99,14 @@ const endGame = (status) => {
     if (status === WIN) {
         console.log("YOU WIN!");
         winMessageDiv.style.display = "block";
-        winScoreP.textContent = "score: " + score;
+        statusPrevGame = WIN;
+        numberOfWins++;
+        winScoreP.textContent = "score: " + score + " / win-streak: " + numberOfWins;
     } else {
         console.log("GAME OVER!");
         gameOverMessageDiv.style.display = "block";
-        gameOverScoreP.textContent = "score: " + score;
+        statusPrevGame = GAME_OVER;
+        gameOverScoreP.textContent = "score: " + score + " / win-streak: " + numberOfWins;
     }
 
     for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
@@ -175,21 +179,14 @@ const pathFinding = async (startLocation) => {
 
                 // gameFieldGrid.children[neighborCell].classList.add("pathfinding");
 
-                if (neighborCell === ghosts[0].location) {
-                    ghosts[0].pathFinder = currentCell;
-                    ghostsMoved++;
-                } else if (neighborCell === ghosts[1].location) {
-                    ghosts[1].pathFinder = currentCell;
-                    ghostsMoved++;
-                } else if (neighborCell === ghosts[2].location) {
-                    ghosts[2].pathFinder = currentCell;
-                    ghostsMoved++;
-                } else if (neighborCell === ghosts[3].location) {
-                    ghosts[3].pathFinder = currentCell;
-                    ghostsMoved++;
+                for (const ghost of ghosts) {
+                    if (neighborCell === ghost.location) {
+                        ghost.pathFinder = currentCell;
+                        ghostsMoved++;
+                    }
                 }
 
-                if (ghostsMoved === 4) {
+                if (ghostsMoved === ghosts.length) {
                     return;
                 }
 
@@ -373,7 +370,7 @@ const eatGhost = (ghost) => {
     moveGhost(ghost, ghost.startLocation);
 
     score += 100;
-    ghostSpeedIncrease = -100;
+    ghostSpeedIncrease = -150;
 }
 
 const ghostContact = (ghost) => {
@@ -528,23 +525,36 @@ const createGhosts = () => {
         while (ghosts.pop());
     }
 
-    ghosts.push(new Ghost("Blinky", 150, 347, PATHFINDING));
-    ghosts.push(new Ghost("Pinky", 150, 403, DIRECT));
-    ghosts.push(new Ghost("Inky", 200, 408, DIRECT));
-    ghosts.push(new Ghost("Clyde", 200, 352, AWAY));
+    ghosts.push(new Ghost("Blinky", 175, 347, PATHFINDING));
+    ghosts.push(new Ghost("Pinky", 175, 403, DIRECT));
+    ghosts.push(new Ghost("Inky", 225, 408, DIRECT));
+    ghosts.push(new Ghost("Clyde", 225, 352, AWAY));
+
+    if (numberOfWins >= 2) {
+        ghosts.push(new Ghost("BoneGrinder", 150, 405, PATHFINDING));
+    }
 }
 
 export const runGame = () => {
-    gameRunning = true;
-
     console.log("run game");
 
-    refreshGameField();
+    gameRunning = true;
+
+    if (statusPrevGame !== undefined) {
+        refreshGameField();
+        console.log("not a new game");
+    }
+    if (statusPrevGame === GAME_OVER) {
+        console.log("game after game-over");
+        ghostSpeedIncrease = 0;
+        score = 0;
+        numberOfWins = 0;
+    } else if (statusPrevGame === WIN) {
+        console.log("game after " + numberOfWins + " wins");
+        ghostSpeedIncrease = 25 * numberOfWins;
+    }
 
     foodRemaining = startingFoodAmount;
-    ghostSpeedIncrease = 0;
-
-    score = 0;
 
     defaultMessageDiv.style.display = "none";
     gameOverMessageDiv.style.display = "none";
@@ -575,10 +585,9 @@ export const runGame = () => {
 
     // start ghost movement
     setTimeout(() => { // wait a moment for ghost initialization
-        ghostMovementHandler(ghosts[0]);
-        ghostMovementHandler(ghosts[1]);
-        ghostMovementHandler(ghosts[2]);
-        ghostMovementHandler(ghosts[3]);
+        for (const ghost of ghosts) {
+            ghostMovementHandler(ghost);
+        }
     }, 100);
 };
 

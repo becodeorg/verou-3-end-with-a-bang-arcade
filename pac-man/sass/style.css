@@ -10,6 +10,7 @@
 }
 
 body {
+  overscroll-behavior: contain;
   height: var(--view-port-height);
   position: relative;
   font-family: "Open Sans", sans-serif;
@@ -165,6 +166,12 @@ p {
 }
 .game-field .Clyde {
   background-color: #d19931;
+}
+.game-field .BoneGrinder {
+  background-color: black;
+}
+.game-field .BoneGrinder::before {
+  background-color: red;
 }
 .game-field .afraid {
   background-color: #8066df;

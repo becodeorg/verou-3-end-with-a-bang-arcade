@@ -21,6 +21,7 @@ $blackish: rgb(17, 5, 44);
 
 
 body {
+    overscroll-behavior: contain;
     height: var(--view-port-height);
     position: relative;
     font-family: 'Open Sans', sans-serif;
@@ -169,6 +170,12 @@ p {
     .Pinky {background-color: rgb(216, 112, 160);}
     .Inky {background-color: rgb(45, 185, 185);}
     .Clyde {background-color: rgb(209, 153, 49);}
+    .BoneGrinder {
+        background-color: rgb(0, 0, 0);
+        &::before {
+            background-color: red;
+        }
+    }
     
     .afraid {
         background-color: rgb(128, 102, 223);
