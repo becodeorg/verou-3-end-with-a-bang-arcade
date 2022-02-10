@@ -30,6 +30,7 @@ let movementDirection;
 let queuedDirection;
 let score;
 let foodRemaining;
+const pacManSpeed = 150;
 
 const scoreP = document.querySelector(".score");
 const defaultMessageDiv = document.querySelector(".default");
@@ -50,12 +51,7 @@ class Ghost {
     afraidStatus = UNAFRAID;
 }
 
-const ghosts = [
-    new Ghost("Blinky", 150, 347, PATHFINDING),
-    new Ghost("Pinky", 150, 403, DIRECT),
-    new Ghost("Inky", 200, 408, DIRECT),
-    new Ghost("Clyde", 200, 352, AWAY),
-];
+const ghosts = [];
 
 const intervalIDs = {
     ghostMovementHandlerIntervalID: {},
@@ -322,38 +318,41 @@ let counter = 0;
 let brave = false;
 
 const ghostMovementHandler = (ghost) => {
-    intervalIDs.ghostMovementHandlerIntervalID[ghost.name] = setInterval(() => {
-        if (powerPelletActive) {
-            moveGhostAwayFromPacMan(ghost);
-        } else if (ghost.movementMode === PATHFINDING) {
-            moveGhost(ghost, ghost.pathFinder);
-        } else if (ghost.movementMode === DIRECT) {
-            if (moveGhostInDirectionOfPacMan(ghost) === false) {
-                ghost.movementMode = PATHFINDING;
-                setTimeout(() => {
-                    ghost.movementMode = DIRECT;
-                }, 5000);
-            }
+    if (!gameRunning) {
+        return;
+    }
+
+    if (powerPelletActive) {
+        moveGhostAwayFromPacMan(ghost);
+    } else if (ghost.movementMode === PATHFINDING) {
+        moveGhost(ghost, ghost.pathFinder);
+    } else if (ghost.movementMode === DIRECT) {
+        if (moveGhostInDirectionOfPacMan(ghost) === false) {
+            ghost.movementMode = PATHFINDING;
+            setTimeout(() => {
+                ghost.movementMode = DIRECT;
+            }, 5000);
+        }
+    } else {
+        if (counter === 10) {
+            counter = 1;
+            brave = !brave;
         } else {
-            if (counter === 10) {
-                counter = 1;
-                brave = !brave;
-            } else {
-                counter++;
-            }
-
-            const locationType = gameFieldGrid.children[ghost.location].classList[1];
-            if (brave || locationType === GHOST_LAIR) {
-                moveGhost(ghost, ghost.pathFinder);
-            } else {
-                moveGhostAwayFromPacMan(ghost);
-            }
+            counter++;
         }
 
-        if (ghost.location === pacManLocation) {
-            ghostContact(ghost);
+        const locationType = gameFieldGrid.children[ghost.location].classList[1];
+        if (brave || locationType === GHOST_LAIR) {
+            moveGhost(ghost, ghost.pathFinder);
+        } else {
+            moveGhostAwayFromPacMan(ghost);
         }
-    }, ghost.speed);
+    }
+
+    if (ghost.location === pacManLocation) {
+        ghostContact(ghost);
+    }
+    setTimeout(ghostMovementHandler, ghost.speed, ghost);
 }
 
 
@@ -482,13 +481,23 @@ const pacManMovementHandler = () => {
             endGame(WIN);
         }
 
-    }, 100);
+    }, pacManSpeed);
 };
 
 
 
 // ----- MAIN CONTROL -----
 
+const createGhosts = () => {
+    if (ghosts.length > 0) {
+        while (ghosts.pop());
+    }
+
+    ghosts.push(new Ghost("Blinky", 150, 347, PATHFINDING));
+    ghosts.push(new Ghost("Pinky", 150, 403, DIRECT));
+    ghosts.push(new Ghost("Inky", 200, 408, DIRECT));
+    ghosts.push(new Ghost("Clyde", 200, 352, AWAY));
+}
 
 const runGame = () => {
     console.log("run game");
@@ -512,11 +521,7 @@ const runGame = () => {
     queuedDirection = "";
     pacManMovementHandler();
 
-    // reset ghost location
-    ghosts[0].location = 347;
-    ghosts[1].location = 403;
-    ghosts[2].location = 408;
-    ghosts[3].location = 352;
+    createGhosts();
 
     // place ghosts on game field
     for (const ghost of ghosts) {
@@ -529,10 +534,12 @@ const runGame = () => {
     }, 100);
 
     // start ghost movement
-    ghostMovementHandler(ghosts[0]);
-    ghostMovementHandler(ghosts[1]);
-    ghostMovementHandler(ghosts[2]);
-    ghostMovementHandler(ghosts[3]);
+    setTimeout(() => { // wait a moment for ghost initialization
+        ghostMovementHandler(ghosts[0]);
+        ghostMovementHandler(ghosts[1]);
+        ghostMovementHandler(ghosts[2]);
+        ghostMovementHandler(ghosts[3]);
+    }, 100);
 };
 
 
