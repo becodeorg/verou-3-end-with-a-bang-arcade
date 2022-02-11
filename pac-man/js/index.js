@@ -5,10 +5,10 @@ import { handleKeyEvent, handleTouchStart, handleTouchMove } from "./controls.js
 import { pathFinding } from "./pathFinding.js";
 import { ghostMovementHandler, moveGhost } from "./ghostMovement.js";
 
+
 // GLOBAL VARIABLES
 document.documentElement.style.setProperty("--view-port-height", window.innerHeight + "px");
 
-// cell classes
 export const cellTypes = {
     WALL: "type-1",
     PELLET: "type-0",
@@ -38,6 +38,7 @@ export const game = {
     score: 0,
     ghostSpeedIncrease: 0,
     startingFoodAmount: gameFieldLayout.filter(x => x == 0).length,
+    pathFindingIntervalID: undefined,
 };
 
 export const pacMan = {
@@ -72,10 +73,6 @@ class Ghost {
 
 export const ghosts = [];
 
-const intervalIDs = {
-    ghostMovementHandlerIntervalID: {},
-    pathFindingIntervalID: undefined,
-};
 
 
 
@@ -91,11 +88,13 @@ const createGameField = () => {
 };
 createGameField();
 
+
 const refreshGameField = () => {
     for (let i = 0; i < cells.length; i++) {
         cells[i].className = "cell type-" + gameFieldLayout[i];
     }
 };
+
 
 const endGame = (status) => {
     window.removeEventListener("keydown", handleKeyEvent);
@@ -115,11 +114,7 @@ const endGame = (status) => {
         domElems.gameOverScoreP.textContent = "score: " + game.score + " / win-streak: " + game.numberOfWins;
     }
 
-    for (const [key, value] of Object.entries(intervalIDs.ghostMovementHandlerIntervalID)) {
-        clearInterval(value);
-    }
-    clearInterval(intervalIDs.pathFindingIntervalID);
-    clearInterval(intervalIDs.startPacManMovingID);
+    clearInterval(game.pathFindingIntervalID);
 
     game.gameRunning = false;
 
@@ -170,6 +165,7 @@ const checkGhostContact = () => {
     }
 }
 
+
 const eatPowerPellet = (location) => {
     console.log("power pellet active!");
     location.classList.remove(cellTypes.POWER_PELLET);
@@ -209,6 +205,7 @@ const checkFood = () => {
         eatPowerPellet(location);
     }
 };
+
 
 const attemptMove = (requestedLocation) => {
     if (!checkIfCellIsTypes(requestedLocation, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
@@ -353,7 +350,7 @@ export const runGame = () => {
     }
 
     // start pathfinding
-    intervalIDs.pathFindingIntervalID = setInterval(() => {
+    game.pathFindingIntervalID = setInterval(() => {
         pathFinding(pacMan.location);
     }, 100);
 
