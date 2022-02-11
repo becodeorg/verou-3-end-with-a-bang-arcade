@@ -5,22 +5,36 @@
   padding: 0;
 }
 
+:root {
+  --view-port-height: 0;
+  --pac-man-color: rgb(230, 180, 19);
+}
+
 body {
+  overscroll-behavior: contain;
+  height: var(--view-port-height);
   position: relative;
   font-family: "Open Sans", sans-serif;
   background-color: #f7f4f2;
   color: #11052c;
   text-align: center;
   margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
-  font-weight: 300;
-  margin: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
 }
 
 h2 {
-  margin-bottom: 10px;
+  margin: 20px;
+}
+
+p {
+  margin: 10px;
 }
 
 .game-field-container {
@@ -52,9 +66,9 @@ h2 {
 }
 
 .game-field {
+  height: min(100vw, var(--view-port-height));
+  width: min(100vw, var(--view-port-height));
   padding: 10px;
-  height: 100vw;
-  width: 100vw;
   display: grid;
   grid-template-rows: repeat(28, 1fr);
   grid-template-columns: repeat(28, 1fr);
@@ -74,9 +88,9 @@ h2 {
   display: inline-block;
 }
 .game-field .type-1 {
-  border: 0.5vw solid #f7f4f2;
+  border: min(0.5vw, 0.5vh) solid #f7f4f2;
   background-color: #b3c0bb;
-  border-radius: 0.5vw;
+  border-radius: min(0.5vw, 0.5vh);
 }
 .game-field .type-1 > .type-2 {
   background-color: #f7f4f2;
@@ -101,7 +115,7 @@ h2 {
 }
 .game-field .pac-man {
   position: relative;
-  background-color: #e6b413;
+  background-color: var(--pac-man-color);
   border-radius: 50%;
 }
 .game-field .pac-man::after {
@@ -153,6 +167,12 @@ h2 {
 }
 .game-field .Clyde {
   background-color: #d19931;
+}
+.game-field .BoneGrinder {
+  background-color: black;
+}
+.game-field .BoneGrinder::before {
+  background-color: red;
 }
 .game-field .afraid {
   background-color: #8066df;
