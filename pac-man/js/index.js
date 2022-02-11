@@ -120,6 +120,7 @@ export const endGame = (status) => {
         domElems.gameOverMessageDiv.style.display = "block";
         game.statusPrevGame = GAME_OVER;
         domElems.gameOverScoreP.textContent = "score: " + game.score + " / win-streak: " + game.numberOfWins;
+        cells[pacMan.location].className = "skull";
     }
 
     clearInterval(game.pathFindingIntervalID);
