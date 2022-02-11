@@ -1,7 +1,7 @@
 import { tileCount, ctx } from "../script.js";
 
 const apple = new Image();
-apple.src = "./apple.png";
+apple.src = "./img/apple.png";
 
 const drawApple = (appleX, appleY) => {
     //this will draw an apple (img)
