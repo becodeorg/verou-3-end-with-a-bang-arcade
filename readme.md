@@ -28,7 +28,7 @@ and the rest were up to our own preferences
 ## Let's Play ! 
 <br/>
 
-Jump into **MichelLe's snake** version and stay healthy with some apples snacks !
+Jump into **Michelle's Snake** version and stay healthy with some apples snacks !
  <br /> 
 
 Challenge Inky, Pinky, Blinky, Clyde  in **Magali's Pac-Man** version !
