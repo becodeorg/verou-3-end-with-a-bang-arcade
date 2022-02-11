@@ -26,7 +26,7 @@ let directionXd = Math.floor(Math.random() * 2);
 let directionYd = Math.floor(Math.random() * 2);
 document.addEventListener("keydown", (event) => {
   if (event.key === "f") {
-    document.getElementById('hello').href="style2.css"
+    document.getElementById('hello').href="style.css"
   }
 })
 document.addEventListener("keydown", (event) => {
