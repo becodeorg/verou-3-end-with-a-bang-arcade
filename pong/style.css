@@ -1,111 +1,108 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
-body{
-    display: flex;
-    justify-content: center;
-    background-color: rgba(63,94,251,1) ;
-    background: radial-gradient(circle, rgba(252,70,107,1) 0%, rgba(63,94,251,1) 100%);
-    
-    align-items: center;
-    color: rgba(89, 255, 47, 0.836);
-    width: 100vw;
-    height: 100vh;
+body {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(63, 94, 251, 1);
+  background: radial-gradient(
+    circle,
+    rgba(252, 70, 107, 1) 0%,
+    rgba(63, 94, 251, 1) 100%
+  );
+
+  align-items: center;
+  color: rgba(89, 255, 47, 0.836);
+  width: 100vw;
+  height: 100vh;
 }
-#theField{
-    background-color: rgba(63,94,251,1);
-    /* background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%); */
-    height: 60VH;
-    width: 60vw;
-    border: 0.1px solid  red ;
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
-    animation: gradient 1.21s  infinite; 
+#theField {
+  background-color: rgba(63, 94, 251, 1);
+  /* background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%); */
+  height: 60vh;
+  width: 60vw;
+  border: 0.1px solid red;
+  box-shadow: 0px 0px 41px 20px rgba(46, 205, 205, 0.56);
+  animation: gradient 1.21s infinite;
 }
 @keyframes gradient {
-    0% { border-color:  #f8f8f8}
-    50% { border-color: #f792b9}
-    100% { border-color: #07bdff}
+  0% {
+    border-color: #f8f8f8;
+  }
+  50% {
+    border-color: #f792b9;
+  }
+  100% {
+    border-color: #07bdff;
+  }
 }
 
-#ball{
-    width: 10px;
-    height: 10px;
-    border-radius: 50px;
-    background-color: rgb(255, 255, 255);
-    
-    box-shadow: 0px 0px 40px 25px rgba(255,0,0,0.54); 
-	
-    position: fixed;
-    top: calc(50% - 7.5px);
-    left: calc(50% - 7.5px);
+#ball {
+  width: 10px;
+  height: 10px;
+  border-radius: 50px;
+  background-color: rgb(255, 255, 255);
+
+  box-shadow: 0px 0px 40px 25px rgba(255, 0, 0, 0.54);
+
+  position: fixed;
+  top: calc(50% - 7.5px);
+  left: calc(50% - 7.5px);
 }
 
+#paddleOne {
+  height: 100px;
+  width: 1px;
+  margin-left: 0.5%;
+  background-color: rgb(255, 255, 255, 0.699);
+  box-shadow: 0px 0px 41px 20px rgba(46, 205, 205, 0.56);
+  position: fixed;
+  top: calc(50% - 25px);
 
-
-
-#paddleOne{
-    height: 100px;
-    width: 1px;
-    margin-left: 0.5%;
-    background-color: rgb(255, 255, 255, 0.699);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
-    position: fixed;
-    top: calc(50% - 25px);
-    
-    
-    
-    /* animation: bebe 1s linear 0s 1 normal forwards; //TODO: Will try first with js then come back to CSS solution if needed*/
-    
-
+  /* animation: bebe 1s linear 0s 1 normal forwards; //TODO: Will try first with js then come back to CSS solution if needed*/
 }
 
+#paddleTwo {
+  height: 100px;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.699);
 
-
-#paddleTwo{
-    height: 100px;
-    width: 1px;
-    background-color: rgba(255, 255, 255, 0.699);
-    
-    position: fixed;
-    top: calc(50% - 25px);
-    left: calc(100% - 20vw - 10px);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56)
-    
-    
+  position: fixed;
+  top: calc(50% - 25px);
+  left: calc(100% - 20vw - 10px);
+  box-shadow: 0px 0px 41px 20px rgba(46, 205, 205, 0.56);
 }
 
-#the-net{
-    background-color: rgba(46,205,205,0.56);
-    box-shadow: 0px 0px 41px 20px rgba(46,205,205,0.56);
-    height: calc(60% );
-    width: 0.1%;
-    position: fixed;
-    left: 50vw  ;
+#the-net {
+  background-color: rgba(46, 205, 205, 0.56);
+  box-shadow: 0px 0px 41px 20px rgba(46, 205, 205, 0.56);
+  height: calc(60%);
+  width: 0.1%;
+  position: fixed;
+  left: 50vw;
 }
 
-#the-score{
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
-    position: fixed;
-    left: calc(25vw + 8%);
-    top: calc(25vh - 20px );
-    
+#the-score {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  position: fixed;
+  left: calc(25vw + 8%);
+  top: calc(25vh - 20px);
 }
-#the-score2{
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
-    position: fixed;
-    top: calc(25vh - 20px);
-    left: calc(50vw + 17%);
+#the-score2 {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  position: fixed;
+  top: calc(25vh - 20px);
+  left: calc(50vw + 17%);
 }
 
-#info{
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 500;
-    position: fixed;
-    top: 8%;
-    left: calc(50vw - 11% );
-    
+#info {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  position: fixed;
+  top: 8%;
+  left: calc(50vw - 11%);
 }
