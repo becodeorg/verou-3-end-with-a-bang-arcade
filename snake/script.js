@@ -108,6 +108,11 @@ const snakeDirection = (event) => {
     }
 };
 document.body.addEventListener("keydown", snakeDirection);
+window.addEventListener("keydown", (event) => {
+    if (event.key === "w" || event.key === "ArrowUp" || event.key === "s" || event.key === "ArrowDown" || event.key === "a" || event.key === "ArrowLeft" || event.key === "d" || event.key === "ArrowRight" ) {
+        event.preventDefault();
+    }
+})
 
 const changeSnakeDirection = () => {
     snakeHeadX = snakeHeadX + xVelocity;
