@@ -7,9 +7,11 @@
 
 :root {
   --view-port-height: 0;
+  --pac-man-color: rgb(230, 180, 19);
 }
 
 body {
+  overscroll-behavior: contain;
   height: var(--view-port-height);
   position: relative;
   font-family: "Open Sans", sans-serif;
@@ -113,7 +115,7 @@ p {
 }
 .game-field .pac-man {
   position: relative;
-  background-color: #e6b413;
+  background-color: var(--pac-man-color);
   border-radius: 50%;
 }
 .game-field .pac-man::after {
@@ -165,6 +167,12 @@ p {
 }
 .game-field .Clyde {
   background-color: #d19931;
+}
+.game-field .BoneGrinder {
+  background-color: black;
+}
+.game-field .BoneGrinder::before {
+  background-color: red;
 }
 .game-field .afraid {
   background-color: #8066df;

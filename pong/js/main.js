@@ -2,7 +2,7 @@ const thetwoos = document.querySelector(".paddles");
 const theField = document.getElementById("theField");
 let gameStatus = "startingScreen";
 const ballStarting = document.getElementById("ball");
-
+const paddleTwo = document.getElementById("paddleTwo");
 const info = document.getElementById("info");
 let paddleOneCoor = paddleOne.getBoundingClientRect();
 let paddleTwoCoor = paddleTwo.getBoundingClientRect();
@@ -21,7 +21,6 @@ let directionX = Math.floor(Math.random() * 4) + 5;
 let directionY = Math.floor(Math.random() * 4) + 5;
 let directionXd = Math.floor(Math.random() * 2);
 let directionYd = Math.floor(Math.random() * 2);
-
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -78,6 +77,14 @@ document.addEventListener("keydown", (event) => {
 });
 
 const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
+  if (directionXd != 0) {
+    // here is the condition for AI to trigger some movement
+    let x = paddleTwoCoor.top - baballCoor.top;
+
+    // const padd2 = (paddleTwo.getBoundingClientRect().top );
+    paddleTwo.style.top = baballCoor.top - 50 + "px";
+  }
+
   if (baballCoor.top <= fieldCoor.top) {
     // if the ball is going at the edge of top field
     directionYd = 1;
@@ -95,23 +102,21 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
     directionXd = 1;
     directionX = Math.floor(Math.random() * 6) + 3;
     directionY = Math.floor(Math.random() * 6) + 3; // if those two are uncommented, the speed and direction change after touching a wall ^^
-    
   }
 
   if (
     baballCoor.right >= paddleTwoCoor.left && // same for paddle right
-    baballCoor.top >= paddleTwoCoor.top &&
-    baballCoor.bottom <= paddleTwoCoor.bottom
+    baballCoor.top + 80 >= paddleTwoCoor.top - 80 &&
+    baballCoor.bottom - 80 <= paddleTwoCoor.bottom + 80
   ) {
     directionXd = 0;
     directionX = Math.floor(Math.random() * 6) + 3;
     directionY = Math.floor(Math.random() * 6) + 3;
-    
   }
 
   // score implement + restart
   if (
-    baballCoor.left <= fieldCoor.left || 
+    baballCoor.left <= fieldCoor.left ||
     baballCoor.right >= fieldCoor.right
   ) {
     if (baballCoor.left <= fieldCoor.left) {
