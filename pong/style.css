@@ -63,6 +63,10 @@ body {
 
   /* animation: bebe 1s linear 0s 1 normal forwards; //TODO: Will try first with js then come back to CSS solution if needed*/
 }
+#commands {
+  position: fixed;
+  top: 90%;
+}
 
 #paddleTwo {
   height: 100px;
