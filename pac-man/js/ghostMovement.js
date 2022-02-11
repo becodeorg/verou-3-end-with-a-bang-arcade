@@ -159,5 +159,5 @@ export const ghostMovementHandler = (ghost) => {
     if (ghost.location === pacMan.location) {
         ghostContact(ghost);
     }
-    setTimeout(ghostMovementHandler, ghost.speed - game.ghostSpeedIncrease, ghost);
+    setTimeout(ghostMovementHandler, ghost.speed, ghost);
 }

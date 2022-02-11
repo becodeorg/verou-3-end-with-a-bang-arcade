@@ -36,10 +36,13 @@ export const game = {
     gameRunning: false,
     powerPelletActive: false,
     score: 0,
-    ghostSpeedIncrease: 0,
     startingFoodAmount: gameFieldLayout.filter(x => x == 0).length,
     pathFindingIntervalID: undefined,
+    foodRemaining: undefined,
 };
+game.firstSpeedIncrease = Math.floor(game.startingFoodAmount * .75);
+game.secondSpeedIncrease = Math.floor(game.startingFoodAmount * .5);
+game.thirdSpeedIncrease = Math.floor(game.startingFoodAmount * .25);
 
 export const pacMan = {
     speed: 150,
@@ -59,9 +62,9 @@ const domElems = {
 export const cells = domElems.gameFieldGrid.children;
 
 class Ghost {
-    constructor(name, speed, location, movementMode) {
+    constructor(name, speedPar, location, movementMode) {
         this.name = name;
-        this.speed = speed;
+        this._speed = speedPar;
         this.startLocation = location;
         this.location = location;
         this.movementMode = movementMode;
@@ -69,6 +72,25 @@ class Ghost {
     pathFinder;
     afraidStatus = UNAFRAID;
     bravery = 0;
+    get speed() {
+        return (this.calcSpeed());
+    }
+    set speed(value) {
+        this._speed = value;
+    }
+    calcSpeed() {
+        if (this.afraidStatus === AFRAID) {
+            return (this._speed + 100);
+        } else {
+            return (this._speed);
+        }
+    }
+    increaseSpeed(amount) {
+        this._speed -= amount;
+    }
+    decreaseSpeed(amount) {
+        this._speed += amount;
+    }
 }
 
 export const ghosts = [];
@@ -145,7 +167,7 @@ const eatGhost = (ghost) => {
     moveGhost(ghost, ghost.startLocation);
 
     game.score += 100;
-    game.ghostSpeedIncrease = -150;
+    ghost.decreaseSpeed(25);
 }
 
 export const ghostContact = (ghost) => {
@@ -178,34 +200,44 @@ const powerPelletCountdown = (countdown) => {
 }
 
 const eatPowerPellet = (location) => {
-    console.log("power pellet active!");
+    game.powerPelletActive = true;
     location.classList.remove(cellTypes.POWER_PELLET);
     location.classList.add(cellTypes.EMPTY);
-    game.powerPelletActive = true;
     for (const ghost of ghosts) {
         ghost.afraidStatus = AFRAID;
     }
-    game.ghostSpeedIncrease = -100;
     pacMan.speed -= 50;
     powerPelletCountdown(7);
     setTimeout(() => {
-        console.log("power pellet wore off");
         game.powerPelletActive = false;
         for (const ghost of ghosts) {
             ghost.afraidStatus = UNAFRAID;
             cells[ghost.location].classList.remove(AFRAID);
         }
-        game.ghostSpeedIncrease += 100;
         pacMan.speed += 50;
     }, 7000);
+}
+
+
+const increaseAllGhostsSpeed = () => {
+    for (const ghost of ghosts) {
+        ghost.increaseSpeed(25);
+    }
 }
 
 const eatPellet = (location) => {
     location.classList.remove(cellTypes.PELLET);
     location.classList.add(cellTypes.EMPTY);
+
     game.score += 10;
     game.foodRemaining--;
-    game.ghostSpeedIncrease++;
+
+    if (game.foodRemaining === game.firstSpeedIncrease
+        || game.foodRemaining === game.secondSpeedIncrease
+        || game.foodRemaining === game.thirdSpeedIncrease) {
+
+        increaseAllGhostsSpeed();
+    }
 }
 
 const checkFood = () => {
@@ -314,10 +346,10 @@ const createGhosts = () => {
         while (ghosts.pop());
     }
 
-    ghosts.push(new Ghost("Blinky", 175, 347, moveModes.PATHFINDING));
-    ghosts.push(new Ghost("Pinky", 175, 403, moveModes.DIRECT));
-    ghosts.push(new Ghost("Inky", 225, 408, moveModes.DIRECT));
-    ghosts.push(new Ghost("Clyde", 225, 352, moveModes.STRANGE));
+    ghosts.push(new Ghost("Blinky", (175 - (25 * game.numberOfWins)), 347, moveModes.PATHFINDING));
+    ghosts.push(new Ghost("Pinky", (175 - (25 * game.numberOfWins)), 403, moveModes.DIRECT));
+    ghosts.push(new Ghost("Inky", (225 - (25 * game.numberOfWins)), 408, moveModes.DIRECT));
+    ghosts.push(new Ghost("Clyde", (225 - (25 * game.numberOfWins)), 352, moveModes.STRANGE));
 
     if (game.numberOfWins >= 2) {
         ghosts.push(new Ghost("BoneGrinder", 150, 405, moveModes.PATHFINDING));
@@ -329,12 +361,10 @@ export const runGame = () => {
 
     if (game.statusPrevGame === GAME_OVER) {
         refreshGameField();
-        game.ghostSpeedIncrease = 0;
         game.score = 0;
         game.numberOfWins = 0;
     } else if (game.statusPrevGame === WIN) {
         refreshGameField();
-        game.ghostSpeedIncrease = 25 * game.numberOfWins;
     }
 
     game.foodRemaining = game.startingFoodAmount;
