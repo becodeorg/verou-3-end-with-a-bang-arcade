@@ -5,6 +5,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Pong" />
+    <meta property="og:type" content="game" />
+    <meta
+      property="og:url"
+      content="https://becodeorg.github.io/verou-3-end-with-a-bang-arcade/pong/index.html"
+    />
+    <meta
+      property="og:image"
+      content="https://becodeorg.github.io/verou-3-end-with-a-bang-arcade/img/pong.png"
+    />
     <link rel="stylesheet" href="./style2.css" id="hello" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,8 +22,20 @@
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+    <title>Pong</title>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-17NGQKFE65"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-    <title>Pong 2 players</title>
+      gtag("config", "G-17NGQKFE65");
+    </script>
   </head>
   <body>
     <a href="../index.html" id="Butt3"><div>Home</div></a>
@@ -28,11 +50,9 @@
       <h4 id="commands">
         Commands : <br />
         player 1 : W & Q <br />
-        player 2 : Up & Down
       </h4>
-      <div></div>
     </div>
 
-    <script src="./js/main2.js"></script>
+    <script src="./js/main.js"></script>
   </body>
 </html>
