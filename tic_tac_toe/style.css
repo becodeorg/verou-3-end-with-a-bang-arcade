@@ -1,127 +1,68 @@
 *{
     padding:0;
     margin:0;
-    font-family:sans-serif;
-}
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
 
+  }
+  
 
-
-body{
-    background-image: url(./images/img.png);
-    
-    display: flex;
+  body {
+    display: grid;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    
-
-
-}
-.container{
     text-align: center;
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 10px;
-    width: 400px;
-    max-width: 100%;
-    box-sizing: border-box;
+    height: 100vh;
+    background-image: url(images/img.png);
+  }
+  
+  .container{
     background-color:white;
-
-}
-
-.address{
-    margin: 20px auto;
-    font-size: 30px;
-}
-.players{
-    display: flex;
-    justify-content:space-between;
-    margin: 20px 50px;
-}
-
-.board{
-    display:grid;
-    grid-template-columns: 100px  100px  100px ;
-    grid-template-rows: 100px  100px  100px;
-    justify-content: center;
-}
-
-.new_game{
-    background-color: #a9fde7;
-    padding: 20px 30px;
-    border-radius: 0 0 10px 10px;
-    margin-top: 50px;
-    outline: none;
-    cursor: pointer;
-    border: none;
-    width: 100%;
-}
-
-.new_game:hover{
-    background-color:#c7feee;
-}
-.new_game:focus{
-    outline: none;
-}
-
-
-.squares{
-    border: 1px solid black;
-    position: relative;
-    cursor: pointer;
-
-}
- .squares:hover{
-     background-color:#dcfff6;
-     
-     
- }
-
-.squares:nth-of-type(1),
-.squares:nth-of-type(2),
-.squares:nth-of-type(3){
-    border-top:none;
+    border: gray 1px solid;
     
-}
+    border-radius: 20px;
+  }
+  
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    margin: 30px 30px;
+  }
 
-.squares:nth-of-type(3),
-.squares:nth-of-type(6),
-.squares:nth-of-type(9){
-    border-right:none;
-}
+  .address{
+      font-size: 50px;
+      font-weight:bolder;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      color: rgb(89, 89, 89);
+  }
 
-.squares:nth-of-type(9),
-.squares:nth-of-type(8),
-.squares:nth-of-type(7){
-    border-bottom: none;
-}
+  .player{
+     color: rgb(89, 89, 89);;
+  } 
 
-.squares:nth-of-type(7),
-.squares:nth-of-type(4),
-.squares:nth-of-type(1){
-    border-left: none;
-};
-
-
-  .gameOver .square:hover,   /*disable the hover (selected/game over)*/
+  .square {
+    width: 100px;
+    height: 100px;
+    border: 1px solid gray;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  
+  .square:hover {
+    background-color:rgb(234, 254, 234);
+  }
+  
+  
+  .gameOver .square:hover,  /* disable the hover  when a square selected OR game over*/
   .square.X:hover,
   .square.O:hover {
     background-color: inherit;
     cursor: default;
   }
   
-  
-  
-  .square .outline { /* display outline and foreground overlapping and center contents */
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    width: 100px;
-  }
-  
-  .square .foreground {
+  .square .foreground {  
     position: absolute;
     display: flex;
     justify-content: center;
@@ -131,31 +72,10 @@ body{
   }
   
   /* outline and foreground of a square with X */
-  
-  .square.X .outline:before {
-    content: "";
-    background: #1a1a1a;
-    width: 14px;
-    height: 58px;
-    position: absolute;
-    transform: rotate(45deg);
-    z-index: 2;
-  }
-  
-  .square.X .outline:after {
-    content: "";
-    background: #1a1a1a;
-    width: 14px;
-    height: 58px;
-    position: absolute;
-    transform: rotate(-45deg);
-    z-index: 2;
-  }
-  
-  .square.X .foreground:before {
+    .square.X .foreground:before {
     content: "";
     background: #f03a17;
-    width: 8px;
+    width: 12px;
     height: 52px;
     position: absolute;
     transform: rotate(45deg);
@@ -165,51 +85,76 @@ body{
   .square.X .foreground:after {
     content: "";
     background: #f03a17;
-    width: 8px;
-    height: 52px;
+    width: 12px;
+    height: 50px;
     position: absolute;
     transform: rotate(-45deg);
-    z-index: 3;
   }
   
   /* outline and foreground of a square with O */
   
-  .square.O .outline:before {
-    content: "";
-    background: transparent;
-    width: 58px;
-    height: 58px;
-    position: absolute;
-    border-radius: 50%;
-    border: 14px solid #1a1a1a;
-    z-index: 2;
-  }
+  
   
   .square.O .foreground:after {
     content: "";
     background: transparent;
-    width: 52px;
-    height: 52px;
+    width: 35px;
+    height: 35px;
     position: absolute;
     border-radius: 50%;
-    border: 8px solid #0082a5;
-    z-index: 3;
+    border: 12px solid lightgreen;
+    
   }
   
+  /* hide outer borders of the squares */
   
+  .square:nth-of-type(1),
+  .square:nth-of-type(2),
+  .square:nth-of-type(3) {
+    border-top: none;
+  }
   
+  .square:nth-of-type(1),
+  .square:nth-of-type(4),
+  .square:nth-of-type(7) {
+    border-left: none;
+  }
+  
+  .square:nth-of-type(3),
+  .square:nth-of-type(6),
+  .square:nth-of-type(9) {
+    border-right: none;
+  }
+  
+  .square:nth-of-type(7),
+  .square:nth-of-type(8),
+  .square:nth-of-type(9) {
+    border-bottom: none;
+  }
+
+  .new_game{
+    background-color:rgb(114, 212, 114);
+    padding: 20px 30px;
+    border-radius: 0 0 20px 20px;
+    margin-top: 5px;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    transition: 0.3s;
+    font-size: 20px;
+    font-weight:bold;
+    color:white;
+    
+
+  }
+  .new_game:hover{
+  background-color:lightgreen;
+    
+
+  }
+  span{
+    color:lightgreen;
+  }
+
  
-  
- 
-  
- 
-
-
-
-
-
-
-
-
-
-

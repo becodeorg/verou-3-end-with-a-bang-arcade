@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family:'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: rgb(17, 5, 44);
     background-color: rgb(247, 244, 242);
 }
@@ -30,7 +30,7 @@ section {
 #restart {
     margin: 10px;
     padding: 8px;
-    font-family:'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: bold;
     background-color: #90EE90;
     border-color: #70bd70;
@@ -40,4 +40,3 @@ footer {
     text-align: center;
     height: 50px;
 }
-
