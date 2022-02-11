@@ -48,9 +48,17 @@ const handleMovementInput = (pressedKey) => {
 
 export const handleKeyEvent = (event) => {
     const pressedKey = event.key;
-
     if (!game.gameRunning) {
-        runGame();
+        if (pressedKey === "ArrowUp"
+            || pressedKey === "w"
+            || pressedKey === "ArrowLeft"
+            || pressedKey === "a"
+            || pressedKey === "ArrowDown"
+            || pressedKey === "s"
+            || pressedKey === "ArrowRight"
+            || pressedKey === "d") {
+            runGame();
+        }
     } else {
         handleMovementInput(pressedKey);
     }
@@ -71,6 +79,7 @@ export const handleTouchMove = (event) => {
     if (!game.gameRunning) {
         runGame();
     }
+
     let xUp = event.touches[0].clientX;
     let yUp = event.touches[0].clientY;
 
