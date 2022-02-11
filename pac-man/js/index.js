@@ -1,10 +1,12 @@
 // IMPORTS
 
+
 import gameFieldLayout from "./gameFieldLayout.js";
 import { handleKeyEvent, handleTouchStart, handleTouchMove } from "./controls.js";
 import { pathFinding } from "./pathFinding.js";
 import { ghostMovementHandler, moveGhost } from "./ghostMovement.js";
 import { Ghost } from "./Ghost.js";
+import { pacManMovementHandler } from "./pacManMovement.js";
 
 
 
@@ -30,8 +32,8 @@ export const moveModes = {
 export const AFRAID = "afraid";
 export const UNAFRAID = "unafraid";
 
-const WIN = true;
-const GAME_OVER = false;
+export const WIN = true;
+export const GAME_OVER = false;
 
 export const game = {
     statusPrevGame: undefined, // undefined: new game, false: game-over, true; win
@@ -89,7 +91,7 @@ const refreshGameField = () => {
 };
 
 
-const endGame = (status) => {
+export const endGame = (status) => {
     window.removeEventListener("keydown", handleKeyEvent);
     document.removeEventListener("touchstart", handleTouchStart, false);
     document.removeEventListener("touchmove", handleTouchMove, false);
@@ -149,7 +151,7 @@ export const ghostContact = (ghost) => {
     }
 }
 
-const checkGhostContact = () => {
+export const checkGhostContact = () => {
     if (cells[pacMan.location].classList.contains("ghost")) {
         const ghost = ghosts.filter(ghost => {
             return ghost.location === pacMan.location;
@@ -211,7 +213,7 @@ const eatPellet = (location) => {
     }
 }
 
-const checkFood = () => {
+export const checkFood = () => {
     const location = cells[pacMan.location];
     if (location.classList.contains(cellTypes.PELLET)) {
         eatPellet(location);
@@ -222,95 +224,9 @@ const checkFood = () => {
 };
 
 
-const attemptMove = (requestedLocation) => {
-    if (!checkIfCellIsTypes(requestedLocation, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
-        cells[pacMan.location].classList.remove("pac-man", "w", "a", "s", "d");
-        cells[requestedLocation].classList.add("pac-man", pacMan.movementDirection);
-        pacMan.location = requestedLocation;
-
-        return (true);
-    } else {
-        return (false);
-    }
-};
-
-
-const pacManMovementHandler = () => {
-    if (!game.gameRunning) {
-        return;
-    }
-
-    // check if queued direction has become an option, else continue in current direction
-    if (pacMan.queuedDirection) {
-        switch (pacMan.queuedDirection) {
-            case "w": // up
-                if (!checkIfCellIsTypes(pacMan.location - game.GAME_FIELD_WIDTH, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
-                    pacMan.movementDirection = "w";
-                    pacMan.queuedDirection = false;
-                }
-                break;
-            case "a": // left
-                if (!checkIfCellIsTypes(pacMan.location - 1, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
-                    pacMan.movementDirection = "a";
-                    pacMan.queuedDirection = false;
-                }
-                break;
-            case "s": // down
-                if (!checkIfCellIsTypes(pacMan.location + game.GAME_FIELD_WIDTH, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
-                    pacMan.movementDirection = "s";
-                    pacMan.queuedDirection = false;
-                }
-                break;
-            case "d": // right
-                if (!checkIfCellIsTypes(pacMan.location + 1, [cellTypes.WALL, cellTypes.GHOST_LAIR])) {
-                    pacMan.movementDirection = "d";
-                    pacMan.queuedDirection = false;
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    switch (pacMan.movementDirection) {
-        case "w": // up
-            attemptMove(pacMan.location - game.GAME_FIELD_WIDTH);
-            break;
-        case "a": // left
-            if (pacMan.location === 364) {
-                attemptMove(391)
-            } else {
-                attemptMove(pacMan.location - 1);
-            }
-            break;
-        case "s": // down
-            attemptMove(pacMan.location + game.GAME_FIELD_WIDTH);
-            break;
-        case "d": // right
-            if (pacMan.location === 391) {
-                attemptMove(364);
-            } else {
-                attemptMove(pacMan.location + 1);
-            }
-            break;
-
-        default:
-            break;
-    }
-
-    checkGhostContact();
-    checkFood();
-    if (game.foodRemaining === 0) {
-        endGame(WIN);
-    }
-
-    setTimeout(pacManMovementHandler, pacMan.speed);
-};
-
-
 
 // ----- MAIN CONTROL -----
+
 
 const createGhosts = () => {
     if (ghosts.length > 0) {
@@ -377,7 +293,7 @@ export const runGame = () => {
 
 
 
-// EVENT LISTENERS
+// ----- EVENT LISTENERS -----
 
 
 window.addEventListener("keydown", handleKeyEvent);
