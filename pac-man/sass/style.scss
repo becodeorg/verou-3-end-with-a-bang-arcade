@@ -85,6 +85,9 @@ p {
     &.game-over {
         background-color: $blackish;
         color: $eggshell;
+        .back {
+            color: $eggshell;
+        }
     }
     &.win {
         background-color: $eggshell;

@@ -71,6 +71,9 @@ p {
   background-color: #11052c;
   color: #f7f4f2;
 }
+.message.game-over .back {
+  color: #f7f4f2;
+}
 .message.win {
   background-color: #f7f4f2;
 }
