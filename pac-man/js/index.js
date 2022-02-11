@@ -4,9 +4,13 @@ import gameFieldLayout from "./gameFieldLayout.js";
 import { handleKeyEvent, handleTouchStart, handleTouchMove } from "./controls.js";
 import { pathFinding } from "./pathFinding.js";
 import { ghostMovementHandler, moveGhost } from "./ghostMovement.js";
+import { Ghost } from "./Ghost.js";
+
 
 
 // GLOBAL VARIABLES
+
+
 document.documentElement.style.setProperty("--view-port-height", window.innerHeight + "px");
 
 export const cellTypes = {
@@ -23,8 +27,8 @@ export const moveModes = {
     STRANGE: "away",
 };
 
-const AFRAID = "afraid";
-const UNAFRAID = "unafraid";
+export const AFRAID = "afraid";
+export const UNAFRAID = "unafraid";
 
 const WIN = true;
 const GAME_OVER = false;
@@ -61,44 +65,11 @@ const domElems = {
 }
 export const cells = domElems.gameFieldGrid.children;
 
-class Ghost {
-    constructor(name, speedPar, location, movementMode) {
-        this.name = name;
-        this._speed = speedPar;
-        this.startLocation = location;
-        this.location = location;
-        this.movementMode = movementMode;
-    }
-    pathFinder;
-    afraidStatus = UNAFRAID;
-    bravery = 0;
-    get speed() {
-        return (this.calcSpeed());
-    }
-    set speed(value) {
-        this._speed = value;
-    }
-    calcSpeed() {
-        if (this.afraidStatus === AFRAID) {
-            return (this._speed + 100);
-        } else {
-            return (this._speed);
-        }
-    }
-    increaseSpeed(amount) {
-        this._speed -= amount;
-    }
-    decreaseSpeed(amount) {
-        this._speed += amount;
-    }
-}
-
 export const ghosts = [];
 
 
 
-
-// FUNCTIONS
+// ----- FUNCTIONS -----
 
 
 const createGameField = () => {
