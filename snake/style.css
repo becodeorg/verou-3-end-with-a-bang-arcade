@@ -12,12 +12,35 @@ body {
 }
 
 header {
-    text-align: center;
     height: 50px;
+}
+
+header nav {
+    display: flex;
+    padding: 5px;
+}
+
+li {
+    list-style-type: none;
+    margin: 5px;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(17, 5, 44);
+}
+
+a:hover {
+    font-weight: bold;
+    color: #9002A8;
 }
 
 h1 {
     font-weight: 400;
+}
+
+main {
+    min-height: 100vh;
 }
 
 section {
@@ -34,6 +57,11 @@ section {
     font-weight: bold;
     background-color: #90EE90;
     border-color: #70bd70;
+    transition: all .2s ease-in-out;
+}
+
+#restart:hover {
+    transform: scale(1.1);
 }
 
 footer {
