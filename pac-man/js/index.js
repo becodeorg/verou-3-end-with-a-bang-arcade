@@ -69,6 +69,17 @@ export const cells = domElems.gameFieldGrid.children;
 
 export const ghosts = [];
 
+const audios = {
+    ascend: new Audio("./audio/ascend.mp3"),
+    descend: new Audio("./audio/descend.mp3"),
+    positive: new Audio("./audio/positive.mp3"),
+    win: new Audio("./audio/win.mp3"),
+    gameOver: new Audio("./audio/game_over.mp3"),
+}
+for (const [key, value] of Object.entries(audios)) {
+    value.volume = 0.2;
+}
+
 
 
 // ----- FUNCTIONS -----
@@ -97,13 +108,13 @@ export const endGame = (status) => {
     document.removeEventListener("touchmove", handleTouchMove, false);
 
     if (status === WIN) {
-        console.log("YOU WIN!");
+        audios.win.play();
         domElems.winMessageDiv.style.display = "block";
         game.statusPrevGame = WIN;
         game.numberOfWins++;
         domElems.winScoreP.textContent = "score: " + game.score + " / win-streak: " + game.numberOfWins;
     } else {
-        console.log("GAME OVER!");
+        audios.gameOver.play();
         domElems.gameOverMessageDiv.style.display = "block";
         game.statusPrevGame = GAME_OVER;
         domElems.gameOverScoreP.textContent = "score: " + game.score + " / win-streak: " + game.numberOfWins;
@@ -135,7 +146,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 
 const eatGhost = (ghost) => {
-    console.log("ate " + ghost.name);
+    audios.positive.currentTime = 0;
+    audios.positive.play();
 
     moveGhost(ghost, ghost.startLocation);
 
@@ -164,6 +176,9 @@ export const checkGhostContact = () => {
 const powerPelletCountdown = (countdown) => {
     countdown--;
     document.documentElement.style.setProperty("--pac-man-color", "rgb(230, " + (180 - (countdown * 15)) + ", 19)");
+    if (countdown === 0) {
+        audios.descend.play();
+    }
     if (countdown === -1) {
         countdown = 7;
         document.documentElement.style.setProperty("--pac-man-color", "rgb(230, 180, 19)");
@@ -174,6 +189,7 @@ const powerPelletCountdown = (countdown) => {
 
 const eatPowerPellet = (location) => {
     game.powerPelletActive = true;
+    audios.ascend.play();
     location.classList.remove(cellTypes.POWER_PELLET);
     location.classList.add(cellTypes.EMPTY);
     for (const ghost of ghosts) {
@@ -245,6 +261,11 @@ const createGhosts = () => {
 
 export const runGame = () => {
     game.gameRunning = true;
+
+    if (game.statusPrevGame === undefined
+        || game.statusPrevGame === GAME_OVER) {
+        audios.win.play();
+    }
 
     if (game.statusPrevGame === GAME_OVER) {
         refreshGameField();
