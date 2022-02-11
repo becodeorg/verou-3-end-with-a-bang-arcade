@@ -53,12 +53,25 @@ p {
   border-top: 1px solid #11052c;
   border-bottom: 1px solid #11052c;
 }
+.message .back {
+  margin-right: auto;
+  width: 20px;
+  display: block;
+  text-decoration: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #11052c;
+}
 .message.default {
   display: block;
   background-color: #f7f4f2;
 }
 .message.game-over {
   background-color: #11052c;
+  color: #f7f4f2;
+}
+.message.game-over .back {
   color: #f7f4f2;
 }
 .message.win {

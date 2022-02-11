@@ -24,7 +24,11 @@ let directionX = Math.floor(Math.random() * 4) + 3;
 let directionY = Math.floor(Math.random() * 4) + 3;
 let directionXd = Math.floor(Math.random() * 2);
 let directionYd = Math.floor(Math.random() * 2);
-
+document.addEventListener("keydown", (event) => {
+  if (event.key === "f") {
+    document.getElementById('hello').href="style.css"
+  }
+})
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     gameStatus = gameStatus == "startingScreen" ? "play" : "startingScreen";

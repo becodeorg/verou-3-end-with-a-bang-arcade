@@ -5,19 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
+    <meta property="og:url" content="https://becodeorg.github.io/verou-3-end-with-a-bang-arcade/snake/index.html">
+    <meta property="og:title" content="Snake">
+    <meta property="og:description" content="Play one of the classic games: snake. Ssss">
+    <meta property="og:image" content="https://becodeorg.github.io/verou-3-end-with-a-bang-arcade/img/snake.png">
+    <meta property="og:image:alt" content="A screenshot of the snake game">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="Game">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Snake</h1>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Back to overview</a></li>
+            </ul>
+        </nav>
     </header>
     <main>
         <section>
+            <h1>Snake</h1>
             <h2>move to play</h2>
             <p>wasd keys / arrow keys</p>
             <p>Score: <span id="score">0</span></p>
-            <p>High Score: <span id="highScore">0</span></p>
             <section id="snakeContainer">
                 <canvas id="snakeCanvas" width="400" height="400"></canvas>
             </section>
@@ -29,5 +42,12 @@
         <p><a target="_blank" href="https://icons8.com/icon/88JxT2imCNTU/apple">Apple</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
     </footer>
 <script type="module" src="script.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-17NGQKFE65"></script>
+<script> //google analytics
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-17NGQKFE65');
+</script>
 </body>
 </html>

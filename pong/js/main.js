@@ -12,6 +12,12 @@ let baballCoor = ballStartingCoor;
 let a = 0;
 let b = 0;
 
+document.addEventListener("keydown", (event) => {
+  if (event.key === "f") {
+    document.getElementById('hello').href="style.css"
+  }
+})
+
 // need a paddle class to organise the gen position of them
 // const paddleSCommon = document
 //   .querySelector(".paddles")
