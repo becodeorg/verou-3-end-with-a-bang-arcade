@@ -30,7 +30,7 @@ body {
   gap: 5vw;
 }
 #butt1,
-#butt2 {
+#butt2,#Butt3 {
   appearance: none;
   background-color: transparent;
   /* border: 2px solid rgba(17, 5, 44, 0.63); */
@@ -50,6 +50,15 @@ body {
   text-align: center;
   text-decoration: none;
 }
+#Butt3{
+  position: fixed;
+  top: 4vh;
+  left: 1%;
+  border: 1px solid;
+  min-height: 0;
+  padding: 16px 14px;
+  
+}
 #butt1:hover {
   color: rgba(247, 244, 242, 0.925);
   background-color: rgba(17, 5, 44, 0.63);
@@ -62,7 +71,13 @@ body {
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
 }
-
+#Butt3:hover{
+    color: rgba(247, 244, 242, 0.925);
+    background-color: rgba(17, 5, 44, 0.63);
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+  
+}
 #theField {
   background-color: rgb(255, 255, 255);
   /* background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%); */
