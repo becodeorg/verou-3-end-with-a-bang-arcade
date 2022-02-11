@@ -2,7 +2,7 @@ const thetwoos = document.querySelector(".paddles");
 const theField = document.getElementById("theField");
 let gameStatus = "startingScreen";
 const ballStarting = document.getElementById("ball");
-
+const paddleTwo = document.getElementById("paddleTwo");
 const info = document.getElementById("info");
 let paddleOneCoor = paddleOne.getBoundingClientRect();
 let paddleTwoCoor = paddleTwo.getBoundingClientRect();
@@ -78,6 +78,32 @@ document.addEventListener("keydown", (event) => {
 });
 
 const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
+  if(directionXd != 0){  // here is the condition for AI to trigger some movement
+    let x = ( paddleTwoCoor.top -  baballCoor.top )
+    
+    
+    const padd2 = (paddleTwo.getBoundingClientRect().top );
+    console.log(padd2);
+    console.log(paddleTwo.getBoundingClientRect().bottom)
+          paddleTwo.style.top = baballCoor.top - 50 + "px"
+          // -x + window.innerHeight /2 -50   + "px";
+          
+          
+          console.log(baballCoor.top + " " + baballCoor.bottom + "balle");
+              console.log(paddleTwoCoor.top+ " " + paddleTwoCoor.bottom + "paddle");
+              console.log(x + "x");
+    console.log((baballCoor.top -50));
+    
+  
+      // setInterval(function(){
+      //   let x = ( paddleTwoCoor.top -  baballCoor.top )
+      //     paddleTwo.style.top = (-x + window.innerHeight *0.1) * 0.5   + "px";
+      //     console.log(baballCoor.top + "balle");
+      //     console.log(paddleTwo.style.top + "paddle");
+      // },100)
+    }
+    
+  
   if (baballCoor.top <= fieldCoor.top) {
     // if the ball is going at the edge of top field
     directionYd = 1;
@@ -89,7 +115,7 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
 
   if (
     baballCoor.left <= paddleOneCoor.right && // if ball is further left than the paddle  + top & bottom conditions
-    baballCoor.top >= paddleOneCoor.top &&
+    baballCoor.top  >= paddleOneCoor.top &&
     baballCoor.bottom <= paddleOneCoor.bottom
   ) {
     directionXd = 1;
@@ -100,8 +126,8 @@ const letsMoveIt = (directionX, directionY, directionXd, directionYd) => {
 
   if (
     baballCoor.right >= paddleTwoCoor.left && // same for paddle right
-    baballCoor.top >= paddleTwoCoor.top &&
-    baballCoor.bottom <= paddleTwoCoor.bottom
+    baballCoor.top + 80  >= paddleTwoCoor.top -80 &&
+    baballCoor.bottom - 80  <= paddleTwoCoor.bottom + 80
   ) {
     directionXd = 0;
     directionX = Math.floor(Math.random() * 6) + 3;
