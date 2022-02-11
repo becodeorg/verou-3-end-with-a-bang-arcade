@@ -12,6 +12,7 @@
 
 :root {
     --view-port-height: 0; // set in js; fix for hiding url bar on phones
+    --pac-man-color: rgb(230, 180, 19);
 }
 
 $eggshell: rgb(247, 244, 242);
@@ -130,7 +131,9 @@ p {
     .type-4 {background-color: $eggshell;} // empty
     .pac-man {
         position: relative;
-        background-color: rgb(230, 180, 19);
+        // background-color: rgb(230, 180, 19);
+        background-color: var(--pac-man-color);
+
         border-radius: 50%;
 
         &::after {

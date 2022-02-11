@@ -7,6 +7,7 @@
 
 :root {
   --view-port-height: 0;
+  --pac-man-color: rgb(230, 180, 19);
 }
 
 body {
@@ -114,7 +115,7 @@ p {
 }
 .game-field .pac-man {
   position: relative;
-  background-color: #e6b413;
+  background-color: var(--pac-man-color);
   border-radius: 50%;
 }
 .game-field .pac-man::after {

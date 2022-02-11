@@ -166,6 +166,17 @@ const checkGhostContact = () => {
 }
 
 
+const powerPelletCountdown = (countdown) => {
+    countdown--;
+    document.documentElement.style.setProperty("--pac-man-color", "rgb(230, " + (180 - (countdown * 15)) + ", 19)");
+    if (countdown === -1) {
+        countdown = 7;
+        document.documentElement.style.setProperty("--pac-man-color", "rgb(230, 180, 19)");
+        return;
+    }
+    setTimeout(powerPelletCountdown, 1000, countdown);
+}
+
 const eatPowerPellet = (location) => {
     console.log("power pellet active!");
     location.classList.remove(cellTypes.POWER_PELLET);
@@ -176,6 +187,7 @@ const eatPowerPellet = (location) => {
     }
     game.ghostSpeedIncrease = -100;
     pacMan.speed -= 50;
+    powerPelletCountdown(7);
     setTimeout(() => {
         console.log("power pellet wore off");
         game.powerPelletActive = false;
