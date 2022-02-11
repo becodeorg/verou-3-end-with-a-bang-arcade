@@ -75,10 +75,12 @@ const audios = {
     positive: new Audio("./audio/positive.mp3"),
     win: new Audio("./audio/win.mp3"),
     gameOver: new Audio("./audio/game_over.mp3"),
+    blip: new Audio("./audio/blip.mp3"),
 }
 for (const [key, value] of Object.entries(audios)) {
     value.volume = 0.2;
 }
+audios.blip.volume = 0.1;
 
 
 
@@ -118,6 +120,7 @@ export const endGame = (status) => {
         domElems.gameOverMessageDiv.style.display = "block";
         game.statusPrevGame = GAME_OVER;
         domElems.gameOverScoreP.textContent = "score: " + game.score + " / win-streak: " + game.numberOfWins;
+        cells[pacMan.location].className = "skull";
     }
 
     clearInterval(game.pathFindingIntervalID);
@@ -220,6 +223,8 @@ const eatPellet = (location) => {
 
     game.score += 10;
     game.foodRemaining--;
+    audios.blip.currentTime = 0;
+    audios.blip.play();
 
     if (game.foodRemaining === game.firstSpeedIncrease
         || game.foodRemaining === game.secondSpeedIncrease

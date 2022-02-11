@@ -190,5 +190,9 @@ p {
 .game-field .afraid {
   background-color: #8066df;
 }
+.game-field .skull {
+  background-image: url("../images/human-skull.png");
+  background-size: cover;
+}
 
 /*# sourceMappingURL=style.css.map */
