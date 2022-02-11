@@ -68,3 +68,9 @@ footer {
     text-align: center;
     height: 50px;
 }
+
+@media only screen and (max-width: 425px) {
+    header nav {
+        justify-content: center;
+    }
+}
