@@ -15,11 +15,14 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
     padding: 10px;
 }
 h1 {
-    font-weight: 400;
+    font-weight: 300;
+    font-size: 3rem;
+    padding: 1rem 0 .5rem;
+    text-transform: uppercase;
+    text-align: center;
 }
 main {
     padding: 5px;
