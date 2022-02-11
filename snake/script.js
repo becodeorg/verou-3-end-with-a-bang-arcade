@@ -23,13 +23,6 @@ let snakeHeadY = 10;
 const snakeParts = [];
 let tailLength = 2;
 
-/*const apple = new Image();
-apple.src = "./apple.png";
-apple.onload = () => {
-    //wait until image is loaded
-    drawApple(); //draw apple after image is loaded
-};*/
-
 let appleX = Math.floor(Math.random() * tileCount);
 let appleY = Math.floor(Math.random() * tileCount);
 
@@ -37,7 +30,7 @@ let xVelocity = 0;
 let yVelocity = 0;
 
 export let playerScore = 0;
-let playerHighScore = 0;
+const playerScoreHigh = 0;
 
 const clearCanvas = () => {
     //select the colour to fill the drawing
