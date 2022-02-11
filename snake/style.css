@@ -11,10 +11,6 @@ body {
     background-color: rgb(247, 244, 242);
 }
 
-header {
-    height: 50px;
-}
-
 header nav {
     display: flex;
     padding: 5px;
@@ -36,7 +32,10 @@ a:hover {
 }
 
 h1 {
-    font-weight: 400;
+    font-weight: 300;
+    font-size: 3rem;
+    text-transform: uppercase;
+    padding: 1rem 0;
 }
 
 main {
